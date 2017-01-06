@@ -27,4 +27,12 @@
         android:gravity="top|left"
         android:editable="true"
         tools:background="?attr/colorButtonNormal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/editText1"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="22dp"
+        android:id="@+id/textView2" />
 </RelativeLayout>

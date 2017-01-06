@@ -14,12 +14,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="hsm.demo.totalfreedom.displayevent"/>
+            </intent-filter>
         </activity>
         <receiver android:name=".DataEdit">
             <intent-filter>
                 <action android:name="hsm.demo.DataEdit">
                 </action>
             </intent-filter>
-        </receiver>    </application>
+        </receiver>
+    </application>
 
 </manifest>

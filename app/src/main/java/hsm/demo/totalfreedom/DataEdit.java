@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UnknownFormatConversionException;
@@ -21,9 +23,31 @@ import java.util.regex.Pattern;
 public class DataEdit extends BroadcastReceiver {
     final String TAG = "BroadcastReceiver";
     final  boolean myDebug=true;
+    public static final String BROADCAST_ACTION = "hsm.demo.totalfreedom.displayevent";
+
+    private final Handler handler = new Handler();
+    Intent myIntent;
+    Context myContext;
+    StringBuilder logText=new StringBuilder();
+    private Runnable sendUpdatesToUI = new Runnable() {
+        public void run() {
+            display();
+        }
+    };
+    private void display() {
+        myIntent.putExtra("text", logText.toString());
+        myContext.sendBroadcast(myIntent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String ScanResult = intent.getStringExtra("data");//Read the scan result from the Intent
+
+        logText.append(ScanResult);
+        handler.removeCallbacks(sendUpdatesToUI);
+        handler.postDelayed(sendUpdatesToUI, 10);
+        this.myContext = context;//you can retrieve context from onReceive argument
+        this.myIntent = new Intent(BROADCAST_ACTION);
 
         //return edited data as bandle
         Bundle bundle = new Bundle();
