@@ -66,11 +66,12 @@ public class DataEdit extends BroadcastReceiver {
         // sections are devided by '=>'
         // a two section rule defines the search pattern (regex) and the replacement pattern
         // a three section rule defines the Symbology (aimID) and then the search pattern and the replacement pattern
-        // the processing of rules from top to down stops after a rule matches
+        // the processing of rules from top to down stops after a rule matches, except for the first or only char of
+        // the aimID field is a '+'
         String[] sRules= new String[]{
 //                "(.)(.)(.*)=>($1) $2-$3\n",
 //                "]A0=>(.*)=>$1\n",
-                "\u001D=>FNC1",
+                "+=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+'
                 "(.*)=>$1\n"
         };
 
@@ -93,7 +94,9 @@ public class DataEdit extends BroadcastReceiver {
                             bMatchedFound=true;
                             formattedOutput=buffer.toString();
                             Log.d(TAG, String.format("Matched rule: %s", r.toString()));
-                            break;
+                            if(r.stop)
+                                break;
+                            Log.d(TAG, "'No stop rule' matched. Continue with next rule...");
                         }
                         else{
                             Log.d(TAG, String.format("NO doRegex match for %s inside aimID", ScanResult));
@@ -105,7 +108,9 @@ public class DataEdit extends BroadcastReceiver {
                         bMatchedFound=true;
                         formattedOutput=buffer.toString();
                         Log.d(TAG, String.format("Matched rule: %s", r.toString()));
-                        break;
+                        if(r.stop)
+                            break;
+                        Log.d(TAG, "'No stop rule' matched. Continue with next rule...");
                     }
                     else{
                         Log.d(TAG, String.format("NO doRegex match for %s outside aimID", ScanResult));
@@ -199,10 +204,16 @@ public class DataEdit extends BroadcastReceiver {
         public String regex="";     // the regular expression defining what to search for
         public String replace="";   // the replacement pattern to return
         public boolean valid=false;
+        public boolean stop=true;
         public rule(String sIn){
             String[] s=sIn.split("=>");
             if(s.length==3){
-                aimID=s[0];
+                if(s[0].startsWith("+")){
+                    stop=false;
+                    aimID=s[0].substring(1);
+                }else {
+                    aimID = s[0];
+                }
                 regex=s[1];
                 replace=s[2];
                 valid=true;
