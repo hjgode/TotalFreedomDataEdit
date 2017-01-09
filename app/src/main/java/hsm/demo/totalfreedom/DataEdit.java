@@ -143,7 +143,10 @@ public class DataEdit extends BroadcastReceiver {
                             doLog(String.format("Matched rule: %s", removeUnicodeAndEscapeChars(r.toString())),context);
                             if(r.stop)
                                 break;
-                            doLog("'No stop rule' matched. Continue with next rule...", context);
+                            else{
+                                doLog("'No stop rule' matched. Continue with next rule...", context);
+                                ScanResult=formattedOutput;
+                            }
                         }
                         else{
                             doLog(String.format("NO doRegex match for %s inside aimID", ScanResult),context);
@@ -157,7 +160,10 @@ public class DataEdit extends BroadcastReceiver {
                         doLog(String.format("Matched rule: %s", r.toString()), context);
                         if(r.stop)
                             break;
-                        doLog("'No stop rule' matched. Continue with next rule...",context);
+                        else{
+                            doLog("'No stop rule' matched. Continue with next rule...", context);
+                            ScanResult=formattedOutput;
+                        }
                     }
                     else{
                         doLog(String.format("NO doRegex match for %s outside aimID", ScanResult), context);
