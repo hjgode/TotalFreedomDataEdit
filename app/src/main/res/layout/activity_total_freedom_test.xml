@@ -30,9 +30,15 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_below="@+id/editText1"
         android:layout_alignParentStart="true"
         android:layout_marginTop="22dp"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView2"
+        android:enabled="true"
+        android:focusable="true"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:scrollbars="vertical"
+        android:maxLines="20"
+        android:lines="20"
+        android:layout_height="240dp" />
 </RelativeLayout>

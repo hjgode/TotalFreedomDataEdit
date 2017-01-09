@@ -16,38 +16,51 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by E841719 on 05.01.2017.
+ * Created by hjgode on 05.01.2017.
  */
 
 
 public class DataEdit extends BroadcastReceiver {
     final String TAG = "BroadcastReceiver";
-    final  boolean myDebug=true;
+    final boolean myDebug = true;
     public static final String BROADCAST_ACTION = "hsm.demo.totalfreedom.displayevent";
 
     private final Handler handler = new Handler();
-    Intent myIntent;
-    Context myContext;
-    StringBuilder logText=new StringBuilder();
-    private Runnable sendUpdatesToUI = new Runnable() {
-        public void run() {
-            display();
+//    Intent myIntent;
+//    Context myContext;
+    StringBuilder logText = new StringBuilder();  //text to sedn to main activity
+
+    void doLog(String s, Context context){
+        Log.d(TAG, s);
+        doUpdate(s, context);
+    }
+
+    void doUpdate(String s, Context context_) {
+        class updateUI implements Runnable {
+            String str;
+            Context _context;
+            updateUI(String s, Context c) {
+                str = s;
+                _context=c;
+            }
+            public void run() {
+                Intent _intent=new Intent(BROADCAST_ACTION);
+                _intent.putExtra("text", str);
+                _context.sendBroadcast(_intent);
+            }
         }
-    };
-    private void display() {
-        myIntent.putExtra("text", logText.toString());
-        myContext.sendBroadcast(myIntent);
+        Thread t = new Thread(new updateUI(s, context_));
+        t.start();
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String ScanResult = intent.getStringExtra("data");//Read the scan result from the Intent
 
+//        this.myContext = context;//you can retrieve context from onReceive argument
+//        this.myIntent = new Intent(BROADCAST_ACTION);
         logText.append(ScanResult);
-        handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 10);
-        this.myContext = context;//you can retrieve context from onReceive argument
-        this.myIntent = new Intent(BROADCAST_ACTION);
+        doLog(ScanResult, context);
 
         //return edited data as bandle
         Bundle bundle = new Bundle();
@@ -82,8 +95,8 @@ public class DataEdit extends BroadcastReceiver {
 
         String input=ScanResult;
         String aimID=intent.getStringExtra("aimId");
-        Log.d(TAG, String.format("ScanData IN: '%s'", removeUnicodeAndEscapeChars(input)));
-        Log.d(TAG, String.format("aimId='%s'",aimID));
+        doUpdate(String.format("ScanData IN: '%s'", removeUnicodeAndEscapeChars(input)),context);
+        doUpdate(String.format("aimId='%s'",aimID),context);
 
         // read rules
         // a rule consist of two or three sections
@@ -99,6 +112,16 @@ public class DataEdit extends BroadcastReceiver {
                 "(.*)=>$1\n"
         };
 
+        //read rules from file
+        ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
+        sRules=readIniFile.getRules();
+        if(sRules.length==0){
+            //add one simple rule
+            sRules=new String[]{"(.*)=>$1"};
+            doLog("Using default rule",context);
+        }
+
+        //convert lines to rules
         List<rule> rules=new ArrayList<rule>();
         //split rule lines
         for (String s:sRules) {
@@ -110,20 +133,20 @@ public class DataEdit extends BroadcastReceiver {
         Boolean bMatchedFound=false;
         for (rule r:rules) {
             if(r.valid){
-                Log.d(TAG, removeUnicodeAndEscapeChars(String.format("DataEdit processing rule: regex:'%s', replace:'%s', with input='%s'", r.regex, r.replace, ScanResult)));
+                doLog(removeUnicodeAndEscapeChars(String.format("DataEdit processing rule: regex:'%s', replace:'%s', for input='%s'", r.regex, r.replace, ScanResult)),context);
                 if(r.aimID.length()>0){
                     //rule uses aimId, so check if aimId matches
                     if(aimID.equals(r.aimID)){
                         if(doRegex(ScanResult, r.regex, r.replace, buffer)) {
                             bMatchedFound=true;
                             formattedOutput=buffer.toString();
-                            Log.d(TAG, String.format("Matched rule: %s", r.toString()));
+                            doLog(String.format("Matched rule: %s", removeUnicodeAndEscapeChars(r.toString())),context);
                             if(r.stop)
                                 break;
-                            Log.d(TAG, "'No stop rule' matched. Continue with next rule...");
+                            doLog("'No stop rule' matched. Continue with next rule...", context);
                         }
                         else{
-                            Log.d(TAG, String.format("NO doRegex match for %s inside aimID", ScanResult));
+                            doLog(String.format("NO doRegex match for %s inside aimID", ScanResult),context);
                         }
                     }
                 }
@@ -131,24 +154,24 @@ public class DataEdit extends BroadcastReceiver {
                     if(doRegex(ScanResult, r.regex, r.replace, buffer)) {
                         bMatchedFound=true;
                         formattedOutput=buffer.toString();
-                        Log.d(TAG, String.format("Matched rule: %s", r.toString()));
+                        doLog(String.format("Matched rule: %s", r.toString()), context);
                         if(r.stop)
                             break;
-                        Log.d(TAG, "'No stop rule' matched. Continue with next rule...");
+                        doLog("'No stop rule' matched. Continue with next rule...",context);
                     }
                     else{
-                        Log.d(TAG, String.format("NO doRegex match for %s outside aimID", ScanResult));
+                        doLog(String.format("NO doRegex match for %s outside aimID", ScanResult), context);
                     }
                 }
             }// end of rule is valid
             else{
-                Log.d(TAG, String.format("DataEdit processing rule INVALID: aimId:'%s', regex:'%s', replace:'%s'", r.regex, r.replace));
+                doLog(String.format("DataEdit processing rule INVALID: aimId:'%s', regex:'%s', replace:'%s'", r.regex, r.replace), context);
             }
         }
         if(bMatchedFound)
-            Log.d(TAG, String.format("DataEdit replacement: %s=>%s", ScanResult, formattedOutput));
+            doLog(String.format("DataEdit replacement: %s=>%s", ScanResult, formattedOutput),context);
         else
-            Log.d(TAG, String.format("NO DataEdit replacement: %s=>%s", ScanResult, formattedOutput));
+            doLog(String.format("NO DataEdit replacement: %s=>%s", ScanResult, formattedOutput),context);
 
         //Return the Modified scan result string
         bundle.putString("data", formattedOutput);
