@@ -8,9 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.UnknownFormatConversionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,15 +104,19 @@ public class DataEdit extends BroadcastReceiver {
         // the processing of rules from top to down stops after a rule matches, except for the first or only char of
         // the aimID field is a '+'
         String[] sRules= new String[]{
-//                "(.)(.)(.*)=>($1) $2-$3\n",
-//                "]A0=>(.*)=>$1\n",
-                "+=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+'
+                "test(.)(.)(.*)=>($1) $2-$3\n", //\n gives x0A
+                "]A0=>(.*)=>$1\n",
+                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
                 "(.*)=>$1\n"
         };
+        SaveToFile saveMe=new SaveToFile("dataedit_regex.ini", context);
+        saveMe.saveToFile(sRules);
 
         //read rules from file
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
         sRules=readIniFile.getRules();
+
+        //create a default match all rule
         if(sRules.length==0){
             //add one simple rule
             sRules=new String[]{"(.*)=>$1"};
@@ -132,12 +134,14 @@ public class DataEdit extends BroadcastReceiver {
         StringBuilder buffer=new StringBuilder();
         Boolean bMatchedFound=false;
         for (rule r:rules) {
+            doLog("Testing rule: "+r.toString(),context);
             if(r.valid){
                 doLog(removeUnicodeAndEscapeChars(String.format("DataEdit processing rule: regex:'%s', replace:'%s', for input='%s'", r.regex, r.replace, ScanResult)),context);
                 if(r.aimID.length()>0){
                     //rule uses aimId, so check if aimId matches
                     if(aimID.equals(r.aimID)){
-                        if(doRegex(ScanResult, r.regex, r.replace, buffer)) {
+                        doLog("aimID matches",context);
+                        if(doRegex(ScanResult, r.regex, r.replace, buffer, r.global)) {
                             bMatchedFound=true;
                             formattedOutput=buffer.toString();
                             doLog(String.format("Matched rule: %s", removeUnicodeAndEscapeChars(r.toString())),context);
@@ -149,12 +153,13 @@ public class DataEdit extends BroadcastReceiver {
                             }
                         }
                         else{
-                            doLog(String.format("NO doRegex match for %s inside aimID", ScanResult),context);
+                            doLog(String.format("aimID does not match", ScanResult),context);
                         }
                     }
                 }
                 else{
-                    if(doRegex(ScanResult, r.regex, r.replace, buffer)) {
+                    doLog("No aimID used in regex", context);
+                    if(doRegex(ScanResult, r.regex, r.replace, buffer, r.global)) {
                         bMatchedFound=true;
                         formattedOutput=buffer.toString();
                         doLog(String.format("Matched rule: %s", r.toString()), context);
@@ -166,13 +171,10 @@ public class DataEdit extends BroadcastReceiver {
                         }
                     }
                     else{
-                        doLog(String.format("NO doRegex match for %s outside aimID", ScanResult), context);
+                        doLog(String.format("Regex did not match for %s", ScanResult), context);
                     }
                 }
             }// end of rule is valid
-            else{
-                doLog(String.format("DataEdit processing rule INVALID: aimId:'%s', regex:'%s', replace:'%s'", r.regex, r.replace), context);
-            }
         }
         if(bMatchedFound)
             doLog(String.format("DataEdit replacement: %s=>%s", ScanResult, formattedOutput),context);
@@ -184,13 +186,13 @@ public class DataEdit extends BroadcastReceiver {
         setResultExtras(bundle);
     }
 
-    boolean doRegex(String sIN, String regex, String replacewith, StringBuilder sOut){
+    boolean doRegex(String sIN, String searchpattern, String replacematch, StringBuilder sOut, boolean global){
         String input=sIN;
-        boolean bRet=true; //did we find a match?
+        boolean bRet=false; //did we find a match?
         sOut.append(sIN);
 
         String myRegex="(.)(.)(.*)";
-        myRegex=regex;
+        myRegex=searchpattern;
 
         boolean faulty=false;
         Pattern p=null;
@@ -236,17 +238,29 @@ public class DataEdit extends BroadcastReceiver {
             }
         }
         String replacementText = "($1) $2-$3\n"; // \\\\x0d will give output \x0d; \\x0d will output x0d NEED to use JAVA escape codes, ie '\n' for a new line
-        replacementText=replacewith;
+        replacementText= replacematch;
         String returnString="";
+
+//        if(global && !Pattern.matches(searchpattern, input)) {
+//            Log.d(TAG, "Pattern does not match!");
+//            return false;
+//        }
         try {
-            returnString = m.replaceAll(replacementText);
-            sOut.delete(0,sOut.length());
-            sOut.append(returnString);
-            bRet=true;
-            Log.d(TAG, String.format("returnString= %s", returnString));
+            if(m.matches() || global){ //redundant with Patter.matches above
+                returnString = m.replaceAll(replacementText);
+                sOut.delete(0,sOut.length());
+                sOut.append(returnString);
+                bRet=true;
+                Log.d(TAG, String.format("returnString= %s", returnString));
+            }
+            else {
+                Log.d(TAG, "rule does not match");
+                bRet=false;
+            }
         }catch (Exception e){
             returnString=sIN;//return unchanged scan data
             Log.e(TAG, "Matcher.replaceAll() exception: "+e.getMessage());
+            bRet=false;
         }
 
         return bRet;
@@ -258,6 +272,8 @@ public class DataEdit extends BroadcastReceiver {
         public String replace="";   // the replacement pattern to return
         public boolean valid=false;
         public boolean stop=true;
+        public boolean global=false;    //match the pattern in sequence or do a search/replace
+
         public rule(String sIn){
             String[] s=sIn.split("=>");
             if(s.length==3){
@@ -267,6 +283,15 @@ public class DataEdit extends BroadcastReceiver {
                 }else {
                     aimID = s[0];
                 }
+                if(s[0].startsWith("g")){
+                    global=true;
+                    aimID=s[0].substring(1);
+                }
+                if(s[0].startsWith("+g")){
+                    global=true;
+                    aimID=s[0].substring(2);
+                }
+
                 regex=s[1];
                 replace=s[2];
                 valid=true;
@@ -276,11 +301,12 @@ public class DataEdit extends BroadcastReceiver {
                 regex=s[0];
                 replace=s[1];
                 valid=true;
+                global=false;
             }
         }
         @Override
         public String toString(){
-            return "'" + aimID + "', '"+regex+ "', '"+replace+ "', "+valid;
+            return "'aimID: " + aimID + "', search: '"+regex+ "', replace: '"+replace+ "', valid: "+valid+", global: "+global;
         }
     }
 

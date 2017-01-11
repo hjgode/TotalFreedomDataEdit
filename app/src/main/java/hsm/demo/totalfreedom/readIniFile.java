@@ -18,14 +18,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by hjgode on 09.01.2017.
  */
 
 public class ReadIniFile {
-    String TAG = "raedIniFile";
+    String TAG = "ReadIniFile";
     File _directory;
     File _file;// = new File(contextWrapper.getExternalFilesDir(null), "state.txt");
     String _filename;
@@ -45,13 +48,37 @@ public class ReadIniFile {
                 Log.d(TAG, "using directory '" + _directory.toString() + "', file='" + _filename.toString()+"'");
                 _file = new File(_directory, _filename);
                 if(_file.exists()){
-                    LineNumberReader linereader=new LineNumberReader(new FileReader(_file));
                     String line="";
-                    while ((line = linereader.readLine()) != null) {
-                        // do something with the line you just read, e.g.
-                        _rulesList.add(line);
+
+                    //binary read
+                    FileInputStream fileInputStream=new FileInputStream(_file);
+                    FileChannel fileChannel=fileInputStream.getChannel();
+                    ByteBuffer byteBuffer=ByteBuffer.allocate((int)fileChannel.size());
+                    fileChannel.read(byteBuffer);
+                    byteBuffer.flip();  //change ByteBuffer from read to write and vice versa
+                    line=new String(byteBuffer.array());
+                    String[] lines=line.split(";\r\n"); //x0d x0a
+                    for (String s:lines) {
+                        _rulesList.add(s);
                         Log.d(TAG, "read: "+line);
                     }
+                    fileChannel.close();
+                    fileChannel=null;
+
+//                    Scanner scanner=new Scanner(_file);
+//                    scanner.useDelimiter(";\r\n");
+//                    while(scanner.hasNext()){
+//                        line=scanner.next();
+//                        _rulesList.add(line);
+//                        Log.d(TAG, "read: "+line);
+//                    }
+
+//                    LineNumberReader linereader=new LineNumberReader(new FileReader(_file));
+//                    while ((line = linereader.readLine()) != null) {
+//                        // do something with the line you just read, e.g.
+//                        _rulesList.add(line);
+//                        Log.d(TAG, "read: "+line);
+//                    }
                 }
                 Log.d(TAG, "read "+_rulesList.size()+" rule lines");
             }
@@ -89,12 +116,5 @@ public class ReadIniFile {
         }
         return false;
     }
-
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
 }
