@@ -93,7 +93,7 @@ public class DataEdit extends BroadcastReceiver {
 
         String input=ScanResult;
         String aimID=intent.getStringExtra("aimId");
-        doUpdate(String.format("ScanData IN: '%s'", removeUnicodeAndEscapeChars(input)),context);
+        doUpdate(String.format("ScanData IN: '%s'", DataEditUtils.getHexedString(input)),context);
         doUpdate(String.format("aimId='%s'",aimID),context);
 
         // read rules
@@ -104,6 +104,7 @@ public class DataEdit extends BroadcastReceiver {
         // the processing of rules from top to down stops after a rule matches, except for the first or only char of
         // the aimID field is a '+'
         String[] sRules= new String[]{
+                "# this is a comment",
                 "test(.)(.)(.*)=>($1) $2-$3\n", //\n gives x0A
                 "]A0=>(.*)=>$1\n",
                 "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
@@ -136,7 +137,7 @@ public class DataEdit extends BroadcastReceiver {
         for (rule r:rules) {
             doLog("Testing rule: "+r.toString(),context);
             if(r.valid){
-                doLog(removeUnicodeAndEscapeChars(String.format("DataEdit processing rule: regex:'%s', replace:'%s', for input='%s'", r.regex, r.replace, ScanResult)),context);
+                doLog(DataEditUtils.getHexedString(String.format("DataEdit processing rule: regex:'%s', replace:'%s', for input='%s'", r.regex, r.replace, ScanResult)),context);
                 if(r.aimID.length()>0){
                     //rule uses aimId, so check if aimId matches
                     if(aimID.equals(r.aimID)){
@@ -144,7 +145,7 @@ public class DataEdit extends BroadcastReceiver {
                         if(doRegex(ScanResult, r.regex, r.replace, buffer, r.global)) {
                             bMatchedFound=true;
                             formattedOutput=buffer.toString();
-                            doLog(String.format("Matched rule: %s", removeUnicodeAndEscapeChars(r.toString())),context);
+                            doLog(String.format("Matched rule: %s", DataEditUtils.getHexedString(r.toString())),context);
                             if(r.stop)
                                 break;
                             else{
@@ -266,62 +267,5 @@ public class DataEdit extends BroadcastReceiver {
         return bRet;
     }
 
-    class rule{
-        public String aimID="";
-        public String regex="";     // the regular expression defining what to search for
-        public String replace="";   // the replacement pattern to return
-        public boolean valid=false;
-        public boolean stop=true;
-        public boolean global=false;    //match the pattern in sequence or do a search/replace
 
-        public rule(String sIn){
-            String[] s=sIn.split("=>");
-            if(s.length==3){
-                if(s[0].startsWith("+")){
-                    stop=false;
-                    aimID=s[0].substring(1);
-                }else {
-                    aimID = s[0];
-                }
-                if(s[0].startsWith("g")){
-                    global=true;
-                    aimID=s[0].substring(1);
-                }
-                if(s[0].startsWith("+g")){
-                    global=true;
-                    aimID=s[0].substring(2);
-                }
-
-                regex=s[1];
-                replace=s[2];
-                valid=true;
-            }
-            else if(s.length==2){
-                aimID="";
-                regex=s[0];
-                replace=s[1];
-                valid=true;
-                global=false;
-            }
-        }
-        @Override
-        public String toString(){
-            return "'aimID: " + aimID + "', search: '"+regex+ "', replace: '"+replace+ "', valid: "+valid+", global: "+global;
-        }
-    }
-
-    public static String removeUnicodeAndEscapeChars(String input) {
-        StringBuilder buffer = new StringBuilder(input.length());
-        for (int i = 0; i < input.length(); i++) {
-            if ((int) input.charAt(i) > 256) {
-                buffer.append("\\u").append(Integer.toHexString((int) input.charAt(i)));
-            } else {
-                if((int)input.charAt(i)<0x20)
-                    buffer.append("<x"+String.format("%02x",(int)input.charAt(i))+">");
-                else
-                    buffer.append(input.charAt(i));
-            }
-        }
-        return buffer.toString();
-    }
 }

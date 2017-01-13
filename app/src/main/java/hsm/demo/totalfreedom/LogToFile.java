@@ -29,9 +29,10 @@ public class LogToFile {
         _filename=filename;
         try {
             Log.d(TAG, "testing external storage is writeable...");
-            if(isExternalStorageWritable()) {
+            if(DataEditUtils.isExternalStorageWritable()){
                 Log.d(TAG, "external storage writeable");
-                _directory = getDocumentsStorageDir();
+                //_directory = getDocumentsStorageDir();
+                _directory=DataEditUtils.getDocumentsStorageDir(TAG);
                 //_directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);//  getExternalFilesDir(null);// filepath, Context.MODE_WORLD_READABLE + Context.MODE_APPEND);
                 //directory = context.getDir(filepath, Context.MODE_WORLD_READABLE + Context.MODE_APPEND);
                 Log.d(TAG, "using directory '" + _directory.toString() + "', file='" + _filename.toString()+"'");
@@ -41,7 +42,8 @@ public class LogToFile {
                     _file.delete();
                     _file = new File(_directory, _filename);
                 }
-                updateMTP(_file);
+                //updateMTP(_file);
+                DataEditUtils.updateMTP(_file,context, TAG);
             }
             else {
                 Log.d(TAG, "external storage is NOT writeable!");
@@ -53,20 +55,6 @@ public class LogToFile {
 
     }
 
-    public void writeLog(String s){
-        try {
-            Log.d(TAG, "...will write " + s);
-            OutputStream os = new FileOutputStream(_file);
-            os.write(s.getBytes(Charset.forName("UTF-8")));
-            os.flush();
-            os.close();
-            updateMTP(_file);
-        } catch (IOException e) {
-            Log.d(TAG, "Error writing " + _file + ", " + e.getMessage());
-        } finally {
-        }
-    }
-
     @Override
     protected void finalize (){
         try {
@@ -74,6 +62,21 @@ public class LogToFile {
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+        }
+    }
+/*
+    public void writeLog(String s){
+        try {
+            Log.d(TAG, "...will write " + s);
+            OutputStream os = new FileOutputStream(_file);
+            os.write(s.getBytes(Charset.forName("UTF-8")));
+            os.flush();
+            os.close();
+            DataEditUtils.updateMTP(_file, _context, TAG);
+            //updateMTP(_file);
+        } catch (IOException e) {
+            Log.d(TAG, "Error writing " + _file + ", " + e.getMessage());
+        } finally {
         }
     }
 
@@ -97,7 +100,7 @@ public class LogToFile {
         return file;
     }
 
-    /* Checks if external storage is available for read and write */
+    // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -105,5 +108,6 @@ public class LogToFile {
         }
         return false;
     }
+*/
 
 }

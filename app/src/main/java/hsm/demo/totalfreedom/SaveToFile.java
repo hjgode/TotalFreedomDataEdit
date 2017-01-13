@@ -32,8 +32,10 @@ public class SaveToFile {
     boolean saveToFile(String[] strings){
         StringBuilder sb=new StringBuilder();
         for (String s:strings) {
-            String t= Pattern.quote(s);
-            sb.append(s+";\r\n");
+//            String t= Pattern.quote(s);
+//            Log.d(TAG, "quoted pattern string: '"+t+"'");
+            String escaped=DataEditUtils.getJavaEscaped(s);
+            sb.append(escaped+DataEditUtils.ruleDelimiter());
         }
         return saveToFile(sb.toString());
     }
@@ -48,7 +50,7 @@ public class SaveToFile {
                 _file = new File(_directory, _filename);
                 FileOutputStream fileOututStream=new FileOutputStream(_file);
                 FileChannel fileChannel=fileOututStream.getChannel();
-                ByteBuffer byteBuffer = ByteBuffer.wrap(string.getBytes(Charset.forName("UTF-8")));
+                ByteBuffer byteBuffer = ByteBuffer.wrap(string.getBytes(Charset.forName(DataEditUtils.myCharset())));
                 fileChannel.write(byteBuffer);
                 //byteBuffer.flip();
                 fileOututStream.flush();

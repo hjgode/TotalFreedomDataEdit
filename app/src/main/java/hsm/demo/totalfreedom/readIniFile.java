@@ -20,6 +20,7 @@ import java.io.LineNumberReader;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -56,11 +57,11 @@ public class ReadIniFile {
                     ByteBuffer byteBuffer=ByteBuffer.allocate((int)fileChannel.size());
                     fileChannel.read(byteBuffer);
                     byteBuffer.flip();  //change ByteBuffer from read to write and vice versa
-                    line=new String(byteBuffer.array());
-                    String[] lines=line.split(";\r\n"); //x0d x0a
-                    for (String s:lines) {
-                        _rulesList.add(s);
-                        Log.d(TAG, "read: "+line);
+                    line=new String(byteBuffer.array(), Charset.forName(DataEditUtils.myCharset()));
+                    String[] lines=line.split(DataEditUtils.ruleDelimiter()); //x0d x0a
+                    for (String theline:lines) {
+                        _rulesList.add(DataEditUtils.getJavaUnescaped(theline));
+                        Log.d(TAG, "read: "+theline);
                     }
                     fileChannel.close();
                     fileChannel=null;
