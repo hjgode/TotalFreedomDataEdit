@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class TotalFreedomTest extends AppCompatActivity {
@@ -28,6 +30,15 @@ public class TotalFreedomTest extends AppCompatActivity {
         setContentView(R.layout.activity_total_freedom_test);
         textView=(TextView)findViewById(R.id.textView2);
         textView.setMovementMethod(new ScrollingMovementMethod());
+
+        Button btnShowList=(Button)findViewById(R.id.btnRulesList);
+        btnShowList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),ListActivity.class);
+                startActivity(i);
+            }
+        });
 
         //verify permissions
         hasPermissions();

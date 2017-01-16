@@ -41,4 +41,12 @@
         android:maxLines="20"
         android:lines="20"
         android:layout_height="240dp" />
+
+    <Button
+        android:text="Rules List"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/btnRulesList" />
 </RelativeLayout>

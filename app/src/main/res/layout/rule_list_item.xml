@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <CheckBox
+        android:text="No Stop Rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chkNoStopRule"
+        android:layout_weight="0.44" />
+    <CheckBox
+        android:text="Global S/R"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chkGlobalSR"
+        android:layout_weight="0.44" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+        <TextView
+            android:text="Aim ID to look for:"
+            android:layout_height="wrap_content"
+            android:id="@+id/labelAimID"
+            android:layout_weight="0.44"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:textAllCaps="false" />
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textAimID"
+            android:layout_weight="0.44" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+    <TextView
+        android:text="Pattern/Match to look for:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/labelPatternMatchLookFor"
+        android:layout_weight="0.44"
+        android:textStyle="bold" />
+
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textPatternMatchLookFor"
+            android:layout_weight="0.44" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+        <TextView
+            android:text="Replacement Pattern:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/labelReplacementPattern"
+            android:layout_weight="0.44"
+            android:textStyle="bold" />
+
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textReplacementPattern"
+            android:layout_weight="0.44" />
+    </LinearLayout>
+
+</LinearLayout>

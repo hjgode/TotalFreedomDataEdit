@@ -178,9 +178,9 @@ public class DataEdit extends BroadcastReceiver {
             }// end of rule is valid
         }
         if(bMatchedFound)
-            doLog(String.format("DataEdit replacement: %s=>%s", ScanResult, formattedOutput),context);
+            doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
         else
-            doLog(String.format("NO DataEdit replacement: %s=>%s", ScanResult, formattedOutput),context);
+            doLog(String.format("NO DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
 
         //Return the Modified scan result string
         bundle.putString("data", formattedOutput);

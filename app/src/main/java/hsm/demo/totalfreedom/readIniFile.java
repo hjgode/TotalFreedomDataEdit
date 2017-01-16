@@ -34,6 +34,7 @@ public class ReadIniFile {
     File _file;// = new File(contextWrapper.getExternalFilesDir(null), "state.txt");
     String _filename;
     Context _context;
+
     ReadIniFile(Context context, String filename){
         _context=context;
         _filename=filename;
