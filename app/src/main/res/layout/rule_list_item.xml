@@ -12,24 +12,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/chkNoStopRule"
-        android:layout_weight="0.44" />
+        android:layout_weight="0.44"
+        android:focusable="false"
+        android:clickable="false" />
     <CheckBox
         android:text="Global S/R"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/chkGlobalSR"
-        android:layout_weight="0.44" />
+        android:layout_weight="0.44"
+        android:focusable="false"
+        android:clickable="false" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="54dp">
+        android:layout_height="26dp">
         <TextView
             android:text="Aim ID to look for:"
             android:layout_height="wrap_content"
             android:id="@+id/labelAimID"
-            android:layout_weight="0.44"
+            android:layout_weight="0.07"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:textAllCaps="false" />
@@ -55,7 +59,7 @@
 
         <TextView
             android:text=""
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textPatternMatchLookFor"
             android:layout_weight="0.44" />
@@ -74,7 +78,7 @@
 
         <TextView
             android:text=""
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textReplacementPattern"
             android:layout_weight="0.44" />

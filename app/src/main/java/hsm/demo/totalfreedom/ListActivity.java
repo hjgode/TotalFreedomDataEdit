@@ -1,17 +1,13 @@
 package hsm.demo.totalfreedom;
 
-import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
-    ListView simpleList;
+    ListView myListView;
     ArrayList<rule> rules=new ArrayList<>();
 
     @Override
@@ -25,17 +21,23 @@ public class ListActivity extends AppCompatActivity {
             rules.add(new rule(s));
         }
 
-        try {
-//            ArrayAdapter<rule> adapter=new ArrayAdapter<rule>(this, android.R.layout.simple_list_item_1, rules);
-//            ListView listView1=(ListView)findViewById(R.id.listView1);
-//            listView1.setAdapter(adapter);
-//            simpleList.setAdapter(adapter);
-//            RuleAdapter ruleAdapter = new RuleAdapter(this, rules);
-//            simpleList = (ListView) findViewById(R.id.rulesListView);
-//            //ruleListAdapter adapter=new ruleListAdapter(this, R.layout.rule_list_item, rules);
-//            simpleList.setAdapter(ruleAdapter);
-        }catch(Exception e){
-            Log.d("Exception: ", e.getMessage());
-        }
+        //rules ArrayList with data
+        // instantiate the custom list adapter
+        customRuleAdapter ruleAdapter=new customRuleAdapter(this, rules);
+        // get the ListView and attach the adapter
+        ListView rulesList=(ListView)findViewById(R.id.list_view_rules);
+        rulesList.setAdapter(ruleAdapter);
+
+        // Setup the data source
+        ArrayList<Item> itemsArrayList=new ArrayList<>();
+        itemsArrayList.add(new Item("name1","description1"));
+        itemsArrayList.add(new Item("name2","description2"));// generateItemsList(); // calls function to get items list
+        // instantiate the custom list adapter
+        CustomListAdapter adapter = new CustomListAdapter(this, itemsArrayList);
+        // get the ListView and attach the adapter
+        ListView itemsListView  = (ListView) findViewById(R.id.list_view_items);
+        itemsListView.setAdapter(adapter);
+
+
     }
 }
