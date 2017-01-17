@@ -105,7 +105,7 @@ public class DataEdit extends BroadcastReceiver {
         // the aimID field is a '+'
         String[] sRules= new String[]{
                 "# this is a comment",
-                "test(.)(.)(.*)=>($1) $2-$3\n", //\n gives x0A
+                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
                 "]A0=>(.*)=>$1\n",
                 "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
                 "(.*)=>$1\n"

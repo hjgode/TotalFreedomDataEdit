@@ -24,11 +24,12 @@
 
         <receiver android:name=".DataEdit">
             <intent-filter>
-                <action android:name="hsm.demo.DataEdit"></action>
+                <action android:name="hsm.demo.DataEdit" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ListActivity"></activity>
+        <activity android:name=".RuleListActivity" />
+        <activity android:name=".EditActivity"></activity>
     </application>
 
 </manifest>

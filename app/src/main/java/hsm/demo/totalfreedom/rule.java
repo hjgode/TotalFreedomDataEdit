@@ -3,11 +3,13 @@ package hsm.demo.totalfreedom;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 /**
  * Created by hjgode on 13.01.2017.
  */
 
-class rule{
+class rule implements Serializable{
     // a rule consist of two or three sections
     // sections are devided by '=>'
     // a two section rule defines the search pattern (regex) and the replacement pattern
@@ -73,51 +75,4 @@ class rule{
         return "'aimID: " + aimID + "', search: '"+DataEditUtils.getJavaEscaped(regex)+ "', replace: '"+DataEditUtils.getJavaEscaped(replace)+ "', valid: "+valid+", global: "+global;
     }
 
-    /** Holds child views for one row. */
-    private static class RuleViewHolder {
-        private CheckBox checkBoxGlobale ;
-        private CheckBox checkBoxNoStop ;
-        private TextView textViewAimID ;
-        private TextView textViewPattern ;
-        private TextView textViewReplace ;
-        public RuleViewHolder() {}
-        public RuleViewHolder(CheckBox chkGlobal, CheckBox chkNoStop, TextView tvAIM, TextView tvPattern, TextView tvReplace) {
-            this.checkBoxGlobale = chkGlobal ;
-            this.checkBoxNoStop=chkNoStop;
-            this.textViewAimID = tvAIM ;
-            this.textViewPattern=tvPattern;
-            this.textViewReplace=tvReplace;
-        }
-        public CheckBox getCheckBoxGlobal() {
-            return checkBoxGlobale;
-        }
-        public void setCheckBoxGlobal(CheckBox checkBox) {
-            this.checkBoxGlobale = checkBox;
-        }
-        public CheckBox getCheckBoxNoStop() {
-            return checkBoxNoStop;
-        }
-        public void setCheckBoxNoStop(CheckBox checkBox) {
-            this.checkBoxNoStop = checkBox;
-        }
-
-        public TextView getTextViewAIM() {
-            return textViewAimID;
-        }
-        public void setTextViewAIM(TextView textView) {
-            this.textViewAimID = textView;
-        }
-        public TextView getTextViewPattern() {
-            return textViewPattern;
-        }
-        public void setTextViewPattern(TextView textView) {
-            this.textViewPattern = textView;
-        }
-        public TextView getTextViewReplace() {
-            return textViewReplace;
-        }
-        public void setTextViewReplace(TextView textView) {
-            this.textViewReplace = textView;
-        }
-    }
 }

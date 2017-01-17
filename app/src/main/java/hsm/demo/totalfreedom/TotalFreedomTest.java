@@ -1,7 +1,6 @@
 package hsm.demo.totalfreedom;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +34,7 @@ public class TotalFreedomTest extends AppCompatActivity {
         btnShowList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),ListActivity.class);
+                Intent i = new Intent(getApplicationContext(),RuleListActivity.class);
                 startActivity(i);
             }
         });

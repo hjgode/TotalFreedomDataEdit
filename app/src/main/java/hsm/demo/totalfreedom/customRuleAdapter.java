@@ -17,16 +17,21 @@ import java.util.List;
  * Created by E841719 on 16.01.2017.
  */
 
-public class customRuleAdapter extends BaseAdapter {
+public class CustomRuleAdapter extends BaseAdapter {
 
     final String TAG="RuleAdapter";
     Context context;
     ArrayList<rule> rules;
 
-    public customRuleAdapter (Context c, ArrayList<rule> items) {
+    public CustomRuleAdapter(Context c, ArrayList<rule> items) {
         Log.d(TAG, "RuleAdapter init()...");
         context=c;
         rules = items;
+    }
+
+    public void updateAdapter(ArrayList<rule> newList){
+        rules=newList;
+        notifyDataSetChanged();
     }
 
     @Override
