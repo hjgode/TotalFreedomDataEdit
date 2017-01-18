@@ -6,15 +6,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+import static android.R.id.list;
 
 public class EditActivity extends AppCompatActivity {
 
     rule theRule;
     final String TAG="EditActivity";
     int iPosition=-1;
+    EditText editAim;
+    Spinner aimIdList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +36,10 @@ public class EditActivity extends AppCompatActivity {
 
         ((CheckBox)findViewById(R.id.checkBox_Global)).setChecked(theRule.global);
         ((CheckBox)findViewById(R.id.checkBox_NoStop)).setChecked(!theRule.stop);
-        ((EditText)findViewById(R.id.editText_AimID)).setText(theRule.aimID);
+
+        editAim=(EditText) findViewById(R.id.editText_AimID);
+        editAim.setText(theRule.aimID);
+
         ((EditText)findViewById(R.id.editText_SearchFor)).setText(DataEditUtils.getJavaEscaped(theRule.regex));
         ((EditText)findViewById(R.id.editText_ReplaceWith)).setText(DataEditUtils.getJavaEscaped(theRule.replace));
 
@@ -48,6 +58,24 @@ public class EditActivity extends AppCompatActivity {
                 resultIntent.putExtra("position", iPosition);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
+            }
+        });
+
+        aimIdList=(Spinner)findViewById(R.id.aimIDlist);
+        //fill list
+        ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimId.AimIds);
+        dataAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
+        aimIdList.setAdapter(dataAdapter);
+        aimIdList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AimId a=AimId.AimIds[position];
+                editAim.setText(a.aimid);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
