@@ -3,7 +3,10 @@ package hsm.demo.totalfreedom;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 
@@ -110,9 +113,10 @@ public class DataEdit extends BroadcastReceiver {
                 "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
                 "(.*)=>$1\n"
         };
-        SaveToFile saveMe=new SaveToFile("dataedit_regex.ini", context);
-        saveMe.saveToFile(sRules);
-
+        if(Debug.isDebuggerConnected()) {
+            SaveToFile saveMe = new SaveToFile("dataedit_regex.ini", context);
+            saveMe.saveToFile(sRules);
+        }
         //read rules from file
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
         sRules=readIniFile.getRules();
@@ -179,14 +183,19 @@ public class DataEdit extends BroadcastReceiver {
         }
         if(bMatchedFound)
             doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
-        else
-            doLog(String.format("NO DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
-
+        else {
+            doBeepWarn();
+            doLog(String.format("NO DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)), context);
+        }
         //Return the Modified scan result string
         bundle.putString("data", formattedOutput);
         setResultExtras(bundle);
     }
 
+    void doBeepWarn(){
+        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+    }
     boolean doRegex(String sIN, String searchpattern, String replacematch, StringBuilder sOut, boolean global){
         String input=sIN;
         boolean bRet=false; //did we find a match?
