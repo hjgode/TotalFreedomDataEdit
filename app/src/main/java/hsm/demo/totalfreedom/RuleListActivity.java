@@ -54,6 +54,20 @@ public class RuleListActivity extends AppCompatActivity {
                 }
             }
         );
+        rulesList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                rule theRule=rules.get(position);
+                Log.d(TAG, "Clicked on "+theRule.toString());
+                Intent i = new Intent(getApplicationContext(), EditActivity.class);
+                i.putExtra("theRule", theRule);
+                i.putExtra("position", position);
+                startActivityForResult(i, UPDATE_RULE_REQUEST);
+//                    TextView v = (TextView) view.findViewById(R.id.textPatternMatchLookFor);
+//                    Toast.makeText(getApplicationContext(), "selected Item Name is " + v.getText(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

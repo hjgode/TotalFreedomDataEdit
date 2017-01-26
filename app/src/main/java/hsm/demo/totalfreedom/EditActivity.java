@@ -61,6 +61,14 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        Button btnCancel=(Button)findViewById(R.id.button_Cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(Activity.RESULT_CANCELED, new Intent());
+                finish();
+            }
+        });
         aimIdList=(Spinner)findViewById(R.id.aimIDlist);
         //fill list
         ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimId.AimIds);
