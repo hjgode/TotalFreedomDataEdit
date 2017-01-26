@@ -27,9 +27,19 @@ Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Setting
 
     hsm.demo.totalfreedom/.DataEdit
 
-![Settings 1](https://raw.github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/DataProcessingSettings_01.png)
+![Settings 1](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/DataProcessingSettings_01.png)
 
-![Settings 2](https://raw.github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/DataProcessingSettings_02.png)
+![Settings 2](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/DataProcessingSettings_02.png)
+
+### Android Permissions
+
+As the Plugin uses a shared directory to read the rules file, it needs android.permission.READ_EXTERNAL_STORAGE and android.permission.WRITE_EXTERNAL_STORAGE. Without these permissions the application code does not work. The write permissions is used to write a default, standard rules file as a starter.
+
+### Usage - TotalFreedomTest
+
+After the apk is installed there is also a Test application available called "TotalFreedomTest". The plugin itself does not need an application to run. The test application has an input field, that can be used to show the wedged data and a information area, that shows internals of the plugin work.
+
+
 
 ## The rules file
 
