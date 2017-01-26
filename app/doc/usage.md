@@ -55,6 +55,10 @@ The demo plugin tool uses the file
  
     <Device>\Internal storage\Documents\dataedit_regex.ini
 
+The rule file can be copied from and to your PC:
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/storage_documents.png)
+
 The list of rules is read on every scanned barcode. Any change will be applied on next barcode scan.
 
 A sample file content will be:
@@ -217,7 +221,32 @@ Purpose: Pass a data string consisting of six digits and add an alphabetic chara
 
     Syntax: ([0-9]{6})=>M$1;
 
-Thus, a scanned data string such as 305481 would be passed and reformatted to read M305481. A scanned data string consisting of more than six numeric characters would be truncated to include only the first six, and then reformatted as described.  A scanned data string in which the six numeric characters are not consecutive would not be passed.
+	305481
+		will change to "M305481"
+	123 305481 123
+		will not match, no change with the rule above
+  
+Thus, a scanned data string such as 305481 would be passed and reformatted to read M305481. A scanned data string consisting of more than six numeric characters will not match.
+
+### Variation A
+
+    Syntax: g=>([0-9]{6})=>M$1;
+
+	305481
+		will change to "M305481"
+	123 305481 123
+		will change to "123 M305481 123"
+
+With the g option, any 6 digit will be replaced by M plus the 6 digits, the rest will not change around.
+
+    Syntax: (.*)\s([0-9]{6})\s(.*)=>M$2;
+
+	305481
+		will change to "M305481"
+	123 305481 123
+		will change to "M305481"
+
+Will find the 6 digits surrounded by white space. A scanned data string in which the six numeric characters are not consecutive would not be passed.
 
 ![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-6digits.png)
 
@@ -231,17 +260,17 @@ Purpose: Pass a data string consisting of nine digits, reformat the data to look
 
 The regex passes only scanned data strings consisting of a group of three numeric characters, followed by a group of two numeric characters, followed by a group of four numeric characters. Note that the groups are not separated by spaces.
 
-The replacemtn then reformats the data by adding hyphens between the numeric groups, and finally adds the XML tag "<SSN>" to the beginning of the string and adds "</SSN>" to the end of the string.
+The replacment then reformats the data by adding hyphens between the numeric groups, and finally adds the XML tag "<SSN>" to the beginning of the string and adds "</SSN>" to the end of the string.
 
 Thus, a data string such as:
 
 	123456789
 
-is passed and reformatted to: 
+is matched and reformatted to: 
 
 	<SSN>123-45-6789</SSN>. 
 
-A data string such as 1234567890 would be truncated to include only the first nine digits, since it consists of more numeric characters than processed by the regex pattern string.
+A data string such as 1234567890 will not match as the regex will match  be truncated to include only the first nine digits, since it consists of more numeric characters than processed by the regex pattern string.
 
 ![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-9digits.png)
 
@@ -286,3 +315,37 @@ is passed, and the data is modified to read:
 
 ![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-Dexter_Gordon.png)
 
+# Addendum
+
+If there is no rule file "dataedit_regex.ini" the plugin will write a default rule file like this:
+
+	# this is a comment;
+	# example 1;
+	([0-9]{6})=>M$1 ex1;
+	# g=>([0-9]{6})=>M$1 ex1a;
+	(.*)\\s([0-9]{6})\\s(.*)=>M$2 ex1b;
+	# example 2;
+	([0-9]{3})([0-9]{2})([0-9]{4})=><SSN>$1-$2-$3</SSN> ex2;
+	# example 3;
+	...(.{13}).....=>$1 ex3;
+	# example 4;
+	([a-zA-Z]+) (\\w+)=>$2, $1 ex4;
+	(.*)=>no match: $1\n;
+
+The rule lines are the ones mentioned as examples.
+
+For example 1 you should only uncomment one of the example rules:
+
+	([0-9]{6})=>M$1 ex1;
+	g=>([0-9]{6})=>M$1 ex1a;
+	(.*)\\s([0-9]{6})\\s(.*)=>M$2 ex1b;
+
+or you will get (possibly) unexpected results. With all ex1 rules enabled you will get:
+
+	"123 305481 123" gives "123 M305481 ex1a 123"
+		(rule "g=>([0-9]{6})=>M$1 ex1a" matched)
+	"305481" gives "M305481 ex1"
+		(rule "([0-9]{6})=>M$1 ex1" matched)
+## Note
+
+The ; is not part of the rule. ;\r\n is used to split the rules file into rules.
