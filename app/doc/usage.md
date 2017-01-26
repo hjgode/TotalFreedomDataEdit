@@ -1,7 +1,10 @@
 # Totalfreedom data editing demo plugin with Regex support
 
-This plugin allows changing the barcode data ouput of wedged barcode data by the use of Java Regex syntax.
+When you use barcode scanning and want to change the form of the scanned barcode data before it is wedged into an application you need a Data Editing Plugin.
+A Data Editing Plugin is a custom software that receives the scanned Barcode data and can return changed data.
 
+Instead of writing different Data Editing Plugins using Android coding technologies, the provided Demo Data Edit Plugin provides a single way to use the same plugin to perform custom data changes. The custom data changes are driven by Java Regex, regular expressions to match and change data.
+ 
 All incoming barcode data is compared to a pattern inside a list of rules. If the scanned data matches the pattern of a rule, the replacement part is used to change the data. The pattern and replacement string are evaluated using Java Regex and become very powerful.
 
 A simple example is the following rule line:
@@ -13,6 +16,18 @@ This will replace the scanned data by the data followed by a New Line character.
 For example: to replace all FNC1 sysmbols inside a scanned barcode by the string <FNC1> use the following line:
 
     +=>\u001d=><fnc1>;
+
+## Installation
+
+Install the Demo Data Editing plugin apk either using ADB or by copying the apk file to the device and then use a file browser to install.
+
+### Setup
+
+Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Settings-Data Editing Plugin and enter the name of the Totalfreedom Demo DataEdit class:
+
+    hsm.demo.totalfreedom/.DataEdit
+
+
 
 ## The rules file
 
