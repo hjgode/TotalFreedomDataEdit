@@ -108,24 +108,33 @@ public class DataEdit extends BroadcastReceiver {
         // the aimID field is a '+'
         String[] sRules= new String[]{
                 "# this is a comment",
-                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
-                "]A0=>(.*)=>$1\n",
-                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
-                "(.*)=>$1\n"
+                "# example 1",
+                "([0-9]{6})=>M$1 ex1",
+                "g=>([0-9]{6})=>M$1 ex1a",
+                "(.*)\\s([0-9]{6})\\s(.*)=>M$2 ex1b",
+                "# example 2",
+                "([0-9]{3})([0-9]{2})([0-9]{4})=><SSN>$1-$2-$3</SSN> ex2",
+                "# example 3",
+                "...(.{13}).....=>$1 ex3",
+                "# example 4",
+                "([a-zA-Z]+) (\\w+)=>$2, $1 ex4",
+//                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
+//                "]A0=>(.*)=>$1\n",
+//                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
+                "(.*)=>no match: $1\n"
         };
-        if(Debug.isDebuggerConnected()) {
-            SaveToFile saveMe = new SaveToFile("dataedit_regex.ini", context);
-            saveMe.saveToFile(sRules);
-        }
         //read rules from file
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
-        sRules=readIniFile.getRules();
+        String[] sRulesTest=readIniFile.getRules();
 
-        //create a default match all rule
-        if(sRules.length==0){
-            //add one simple rule
-            sRules=new String[]{"(.*)=>$1"};
-            doLog("Using default rule",context);
+        if(Debug.isDebuggerConnected() || sRulesTest.length==0) {
+            //create a default rule file if there are no rules or if debugger is attached
+            SaveToFile saveMe = new SaveToFile("dataedit_regex.ini", context);
+            saveMe.saveToFile(sRules);
+            doLog("Using default rules",context);
+        }
+        else{
+            sRules=sRulesTest;
         }
 
         //convert lines to rules
