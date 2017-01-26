@@ -35,11 +35,19 @@ Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Setting
 
 As the Plugin uses a shared directory to read the rules file, it needs android.permission.READ_EXTERNAL_STORAGE and android.permission.WRITE_EXTERNAL_STORAGE. Without these permissions the application code does not work. The write permissions is used to write a default, standard rules file as a starter.
 
+![Android Permissions for TotalFreedomTest](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/AppPermissions_01.png)
+
 ### Usage - TotalFreedomTest
 
 After the apk is installed there is also a Test application available called "TotalFreedomTest". The plugin itself does not need an application to run. The test application has an input field, that can be used to show the wedged data and a information area, that shows internals of the plugin work.
 
+![TotalFreedomTest_01](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/TotalFreedomTest_01.png)
 
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/TotalFreedomTest_02.png)
+
+# Configuration
+
+The Demo Totalfreedom plugin is configured by a text rules file.
 
 ## The rules file
 
@@ -191,3 +199,90 @@ Regex is regular expressions and a way to define a pattern for a search and repl
 	(?i)		makes the regex ignoring case
 	(?s)		single line mode
 	(?m)		multiline mode
+
+# Examples
+
+The following is a list of examples with barcodes, rules and the resulting wedged data.
+
+In addition to data filtering, the Demo plugin will allow editing of the data once it is accepted.  This editing will allow:
+
+* Splitting the label into fields and extracting these fields for later processing
+* Rearrangement or deletion of these fields
+* Addition of text to the data
+* Stripping of extraneous data.
+
+## Regex Rule Example 1
+
+Purpose: Pass a data string consisting of six digits and add an alphabetic character to the beginning of the string.
+
+    Syntax: ([0-9]{6})=>M$1;
+
+Thus, a scanned data string such as 305481 would be passed and reformatted to read M305481. A scanned data string consisting of more than six numeric characters would be truncated to include only the first six, and then reformatted as described.  A scanned data string in which the six numeric characters are not consecutive would not be passed.
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-6digits.png)
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-3digits_blank_6digits_blank_3digits.png)
+
+## Regex Rule Example 2
+
+Purpose: Pass a data string consisting of nine digits, reformat the data to look like a Social Security number, and add an XML tag called <SSN>.
+
+    Syntax:([0-9]{3})([0-9]{2})([0-9]{4})=><SSN>$1-$2-$3</SSN>;
+
+The regex passes only scanned data strings consisting of a group of three numeric characters, followed by a group of two numeric characters, followed by a group of four numeric characters. Note that the groups are not separated by spaces.
+
+The replacemtn then reformats the data by adding hyphens between the numeric groups, and finally adds the XML tag "<SSN>" to the beginning of the string and adds "</SSN>" to the end of the string.
+
+Thus, a data string such as:
+
+	123456789
+
+is passed and reformatted to: 
+
+	<SSN>123-45-6789</SSN>. 
+
+A data string such as 1234567890 would be truncated to include only the first nine digits, since it consists of more numeric characters than processed by the regex pattern string.
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-9digits.png)
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-1234567890.png)
+
+## Regex Rule Example 3
+
+Purpose: Pass a data string consisting of 21 digits and delete a specified number of characters from the beginning and end of the string.
+
+	Syntax: ...(.{13}).....=>$1;
+
+The regex passes scanned data strings that consist of 21 characters. The replacement expression removes the first three and the last five characters from the string as these are not part of the group marked with ( and ) in the regex string.
+
+Thus, a scanned data string such as: 
+
+	AAA1234567890123BBBBB 
+
+is passed and reformatted to: 
+
+	1234567890123
+
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-AAA1234567890123BBBBB.png)
+
+## Regex Rule Example 4
+
+Purpose: Pass a data string consisting of two groups of alphabetic characters and reformat the string into *lastname*, *firstname*.
+
+	([a-zA-Z]+) (\\w+)=>$2, $1;
+
+The regex matches scanned data strings that consist of two groups of alphabetic characters separated by a space. The replacement expression reformats the passed data string so that the second group of characters precedes the first group. The replacement expression also inserts a comma and a space between the two groups of characters.
+
+The regex uses one set [a-zA-Z] and the word specifier \w to show alternative ways to look for printable characters making a word. In both cases the + sign after the set and specifier means: match at least one and as much as possible.
+
+Thus, a scanned data string such as: 
+
+	Dexter Gordon
+
+is passed, and the data is modified to read: 
+	
+	Gordon, Dexter
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-Dexter_Gordon.png)
+
