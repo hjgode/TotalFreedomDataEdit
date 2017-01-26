@@ -27,7 +27,9 @@ Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Setting
 
     hsm.demo.totalfreedom/.DataEdit
 
+![Settings 1](https://raw.github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/DataProcessingSettings_01.png)
 
+![Settings 2](https://raw.github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/DataProcessingSettings_02.png)
 
 ## The rules file
 
