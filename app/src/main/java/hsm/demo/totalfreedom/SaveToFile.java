@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -27,6 +28,23 @@ public class SaveToFile {
     public SaveToFile(String filename, Context con){
         _context=con;
         _filename=filename;
+    }
+
+    public boolean saveToFile(ArrayList<rule> rules){
+        boolean bRet=false;
+        ArrayList<String> listArray=new ArrayList<String>();
+        for (rule r:rules
+             ) {
+            listArray.add(r.getRawString());
+        }
+        String[] list=new String[listArray.size()];
+        int i=0;
+        for (String s:listArray) {
+            list[i]=s;
+            i++;
+        }
+        bRet=saveToFile(list);
+        return  bRet;
     }
 
     boolean saveToFile(String[] strings){

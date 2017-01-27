@@ -30,18 +30,25 @@
             android:layout_below="@+id/linearLayout"
             android:layout_alignParentStart="true">
 
-            <Button
-                android:text="down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnDown"
+            <TextView
+                android:text="Click item for menu"
+                android:layout_height="200dp"
+                android:id="@+id/textView6"
+                android:layout_width="120dp"
                 android:layout_alignParentLeft="true"/>
 
             <Button
-                android:text="up"
+                android:text="Add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnUp"
+                android:id="@+id/btnAdd"
+                android:layout_centerHorizontal="true"/>
+
+            <Button
+                android:text="back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCloseListActivity"
                 android:layout_alignParentRight="true"/>
         </RelativeLayout>
     </LinearLayout>

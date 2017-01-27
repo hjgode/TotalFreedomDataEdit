@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by E841719 on 16.01.2017.
+ * Created by hjgode on 16.01.2017.
  */
 
 public class CustomRuleAdapter extends BaseAdapter {

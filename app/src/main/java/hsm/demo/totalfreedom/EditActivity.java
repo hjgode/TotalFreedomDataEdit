@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,16 +13,22 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import static android.R.id.list;
+import static android.R.id.switchInputMethod;
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends AppCompatActivity
+        //implements View.OnClickListener
+        {
 
     rule theRule;
     final String TAG="EditActivity";
     int iPosition=-1;
-    EditText editAim;
     Spinner aimIdList;
+    CheckBox chkGlobal, chkNoStop;
+    EditText txtAimID, txtRegex, txtReplace;
+    EditText currentEditText=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +41,41 @@ public class EditActivity extends AppCompatActivity {
 
         Log.d(TAG, "received rule: "+theRule.toString());
 
-        ((CheckBox)findViewById(R.id.checkBox_Global)).setChecked(theRule.global);
-        ((CheckBox)findViewById(R.id.checkBox_NoStop)).setChecked(!theRule.stop);
+        chkGlobal=(CheckBox)findViewById(R.id.checkBox_Global);
+        chkGlobal.setChecked(theRule.global);
 
-        editAim=(EditText) findViewById(R.id.editText_AimID);
-        editAim.setText(theRule.aimID);
+        chkNoStop=(CheckBox)findViewById(R.id.checkBox_NoStop);
+        chkNoStop.setChecked(!theRule.stop);
 
-        ((EditText)findViewById(R.id.editText_SearchFor)).setText(DataEditUtils.getJavaEscaped(theRule.regex));
-        ((EditText)findViewById(R.id.editText_ReplaceWith)).setText(DataEditUtils.getJavaEscaped(theRule.replace));
+        txtAimID=(EditText) findViewById(R.id.editText_AimID);
+        txtAimID.setText(theRule.aimID);
+//        txtAimID.setOnClickListener(this);
+        txtAimID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                currentEditText=txtAimID;
+            }
+        });
+
+        txtRegex=(EditText)findViewById(R.id.editText_SearchFor);
+        txtRegex.setText(DataEditUtils.getJavaEscaped(theRule.regex));
+//        txtRegex.setOnClickListener(this);
+        txtRegex.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                currentEditText=txtRegex;
+            }
+        });
+
+        txtReplace=(EditText)findViewById(R.id.editText_ReplaceWith);
+        txtReplace.setText(DataEditUtils.getJavaEscaped(theRule.replace));
+//        txtReplace.setOnClickListener(this);
+        txtReplace.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                currentEditText=txtReplace;
+            }
+        });
 
         Button btnOK = (Button)findViewById(R.id.button_Save);
         btnOK.setOnClickListener(new View.OnClickListener() {
@@ -51,8 +85,14 @@ public class EditActivity extends AppCompatActivity {
                 theRule.stop=!((CheckBox)findViewById(R.id.checkBox_NoStop)).isChecked();
                 theRule.aimID=((EditText)findViewById(R.id.editText_AimID)).getText().toString();
 
-                theRule.regex=DataEditUtils.getJavaUnescaped (((EditText)findViewById(R.id.editText_SearchFor)).getText().toString());
-                theRule.replace=DataEditUtils.getJavaUnescaped (((EditText)findViewById(R.id.editText_ReplaceWith)).getText().toString());
+                String regexStr=txtRegex.getText().toString();
+                //theRule.regex=DataEditUtils.getJavaUnescaped (regexStr);
+                theRule.regex=regexStr;
+
+                String replaceStr=txtReplace.getText().toString();
+                //theRule.replace=DataEditUtils.getJavaUnescaped (replaceStr);
+                theRule.replace=replaceStr;
+
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("theRule", theRule);
                 resultIntent.putExtra("position", iPosition);
@@ -78,7 +118,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AimId a=AimId.AimIds[position];
-                editAim.setText(a.aimid);
+                txtAimID.setText(a.aimid);
             }
 
             @Override
@@ -86,5 +126,69 @@ public class EditActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+//    public void onClick(View v){
+//        switch(v.getId()){
+//            case R.id.editText_AimID:
+//                currentEditText=(EditText)v;
+//                break;
+//            case R.id.editText_SearchFor:
+//                currentEditText=(EditText)v;
+//                break;
+//            case R.id.editText_ReplaceWith:
+//                currentEditText=(EditText)v;
+//                break;
+//        }
+//    }
+
+    //onClick has been defined in layout file
+    void perform_onInsertClick(View view){
+        TextView tv= (TextView) view;
+        switch(tv.getId()) {
+            case R.id.textAnyChar:
+                insertText(currentEditText, ".");
+                break;
+            case R.id.textAnyDigit:
+                insertText(currentEditText, "\\d");
+                break;
+            case R.id.textZeroOrMany:
+                insertText(currentEditText, "*");
+                break;
+            case R.id.textOneOrMany:
+                insertText(currentEditText, "+");
+                break;
+            case R.id.textNTimes:
+                insertText(currentEditText, "{n}");
+                break;
+            //Groups
+            case R.id.textGroupAnyChar:
+                insertText(currentEditText, "(.)");
+                break;
+            case R.id.textGroupAnyDigit:
+                insertText(currentEditText, "(\\d)");
+                break;
+            case R.id.textGroupZeroOrMany:
+                insertText(currentEditText, "(.*)");
+                break;
+            case R.id.textGroupOneOrMany:
+                insertText(currentEditText, "(.+)");
+                break;
+            case R.id.textGrouppNTimes:
+                insertText(currentEditText, "(.{n})");
+                break;
+        }
+    }
+
+    void insertText(EditText editText, String sInsert){
+        int start=Math.max(editText.getSelectionStart(),0);
+        int end=Math.max(editText.getSelectionEnd(),0);
+        editText.getText().replace(
+                Math.min(start,end),
+                Math.max(start,end),
+                sInsert,
+                0,
+                sInsert.length());
     }
 }

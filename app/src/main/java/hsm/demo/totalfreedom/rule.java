@@ -77,4 +77,24 @@ class rule implements Serializable{
         return "'aimID: " + aimID + "', search: '"+DataEditUtils.getJavaEscaped(regex)+ "', replace: '"+DataEditUtils.getJavaEscaped(replace)+ "', valid: "+valid+", global: "+global;
     }
 
+    public String getRawString(){
+        StringBuilder sb=new StringBuilder();
+        if(!stop)
+            sb.append("+");
+        if(global)
+            sb.append("g");
+        if(aimID.length()>0)
+            sb.append(aimID);
+        if(!stop || global || aimID.length()>0)
+            sb.append("=>");
+        if(regex.length()>0) {
+            sb.append(regex);
+            if(!regex.startsWith("#"))
+                sb.append("=>");
+        }
+        sb.append(replace);
+
+        return  sb.toString();
+    }
+
 }

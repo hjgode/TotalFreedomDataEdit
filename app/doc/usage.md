@@ -59,6 +59,8 @@ The demo plugin tool uses the file
  
     <Device>\Internal storage\Documents\dataedit_regex.ini
 
+* NOTE: The directory "Documents" might not exist on your device. If so, you have to manually create the directory.
+
 The rule file can be copied from and to your PC:
 
 ![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/storage_documents.png)
@@ -110,6 +112,8 @@ Rules are processed line by line from top to bottom. If a rule matches, the proc
 #### The 'g' option
 
 The demo plugin can match a pattern on the whole data or do a simple search-and-replace. If the 'g' option is used, the pattern and replacement field are used for a global search&replace.
+
+* The 'g' option implies also as the 'no-stop' handling. A following rule will be processed.
 
 #### The AimID
 

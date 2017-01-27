@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_edit_rule"
+        android:title="Edit"/>
+    <item android:id="@+id/menu_delete_rule"
+        android:title="Delete"/>
+    <item android:id="@+id/menu_pushup_rule"
+        android:title="Move Up"/>
+    <item android:id="@+id/menu_pushdown_rule"
+        android:title="Move Down"/>
+    <item android:id="@+id/menu_dismiss_rule"
+        android:title="DISMISS"/>
+</menu>

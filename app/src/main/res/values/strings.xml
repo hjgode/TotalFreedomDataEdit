@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TotalFreedom</string>
+    <string name="txtYesNoDialogTitle">Please confirm deletion</string>
+    <string name="txtYesNoDialogYesButtonText">Yes</string>
+    <string name="txtYesNoDialogNoButtonText">No</string>
+    <string name="txtYesNoDialogText">Delete this rule?</string>
+    <string name="txtMessageNoDelete">Rule not deleted</string>
+    <string name="txtMessageYesDeleted">Rule deleted</string>
 </resources>

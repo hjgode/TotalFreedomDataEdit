@@ -120,6 +120,10 @@ public class DataEdit extends BroadcastReceiver {
                 "...(.{13}).....=>$1 ex3",
                 "# example 4",
                 "([a-zA-Z]+) (\\w+)=>$2, $1 ex4",
+                "# example 5",
+                "g=>([0-9]{6})=>M$1 ex5",
+                "# example 5b",
+                "g=>(\\d{6})=>M$1 ex5b",
 //                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
 //                "]A0=>(.*)=>$1\n",
 //                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
@@ -130,7 +134,7 @@ public class DataEdit extends BroadcastReceiver {
         String[] sRulesTest=readIniFile.getRules();
 
         if(
-//                Debug.isDebuggerConnected() ||
+                Debug.isDebuggerConnected() ||
                         sRulesTest.length==0
                 ) {
             //create a default rule file if there are no rules or if debugger is attached
@@ -146,7 +150,9 @@ public class DataEdit extends BroadcastReceiver {
         List<rule> rules=new ArrayList<rule>();
         //split rule lines
         for (String s:sRules) {
-            rules.add(new rule(s));
+            rule theRule=new rule(s);
+            if(theRule.regex.length()>0) //do not add empty rules
+                rules.add(theRule);
         }
 
         //go thru all rules and see if rule matches
