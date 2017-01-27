@@ -17,6 +17,10 @@ For example: to replace all FNC1 sysmbols inside a scanned barcode by the string
 
     +=>\u001d=><fnc1>;
 
+## Note
+
+If no rule matches, nothing is returned and a 'bad scan' sound is emitted.
+
 ## Installation
 
 Install the Demo Data Editing plugin apk either using ADB or by copying the apk file to the device and then use a file browser to install.
@@ -314,6 +318,20 @@ is passed, and the data is modified to read:
 	Gordon, Dexter
 
 ![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-Dexter_Gordon.png)
+
+# Regex Rule Example 5
+
+	g=>([0-9]{6})=>M$1;
+
+The above will replace a sequence of exactly 6 digits by M and the digits.
+
+	10110
+		will return no result as the rule does not match
+	305481
+		will change to "M305481"
+	123 305481 123
+		will change to "123 M305481 123"
+	 
 
 # Addendum
 
