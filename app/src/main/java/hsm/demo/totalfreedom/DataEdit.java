@@ -66,6 +66,8 @@ public class DataEdit extends BroadcastReceiver {
         //return edited data as bandle
         Bundle bundle = new Bundle();
         String formattedOutput=ScanResult; //what to return
+        //if nothing matches return nothing?
+        formattedOutput="";
 
         if(myDebug) {
             //for debugging?
@@ -127,7 +129,10 @@ public class DataEdit extends BroadcastReceiver {
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
         String[] sRulesTest=readIniFile.getRules();
 
-        if(Debug.isDebuggerConnected() || sRulesTest.length==0) {
+        if(
+//                Debug.isDebuggerConnected() ||
+                        sRulesTest.length==0
+                ) {
             //create a default rule file if there are no rules or if debugger is attached
             SaveToFile saveMe = new SaveToFile("dataedit_regex.ini", context);
             saveMe.saveToFile(sRules);
@@ -144,7 +149,7 @@ public class DataEdit extends BroadcastReceiver {
             rules.add(new rule(s));
         }
 
-        //go thru all rules unless rule matches
+        //go thru all rules and see if rule matches
         StringBuilder buffer=new StringBuilder();
         Boolean bMatchedFound=false;
         for (rule r:rules) {
@@ -167,8 +172,12 @@ public class DataEdit extends BroadcastReceiver {
                             }
                         }
                         else{
-                            doLog(String.format("aimID does not match", ScanResult),context);
+                            doLog(String.format("aimID rule does not match", ScanResult),context);
                         }
+                    }
+                    else{
+                        doLog(String.format("rule AimID does not match for: %s", ScanResult),context);
+                        bMatchedFound=false;
                     }
                 }
                 else{
@@ -187,13 +196,16 @@ public class DataEdit extends BroadcastReceiver {
                     else{
                         doLog(String.format("Regex did not match for %s", ScanResult), context);
                     }
-                }
+                }//if AimID.length>0
             }// end of rule is valid
+            else{
+                doLog(String.format("Not a valid rule: %s", r.toString()), context);
+            }
         }
         if(bMatchedFound)
             doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
         else {
-            doBeepWarn();
+            DataEditUtils.doBeepWarn();
             doLog(String.format("NO DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)), context);
         }
         //Return the Modified scan result string
@@ -201,10 +213,6 @@ public class DataEdit extends BroadcastReceiver {
         setResultExtras(bundle);
     }
 
-    void doBeepWarn(){
-        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-    }
     boolean doRegex(String sIN, String searchpattern, String replacematch, StringBuilder sOut, boolean global){
         String input=sIN;
         boolean bRet=false; //did we find a match?
@@ -215,6 +223,7 @@ public class DataEdit extends BroadcastReceiver {
 
         boolean faulty=false;
         Pattern p=null;
+        //check the regex syntax, does it compile?
         try {
             p = Pattern.compile(myRegex);
         }catch(UnknownFormatConversionException e){
@@ -225,6 +234,7 @@ public class DataEdit extends BroadcastReceiver {
             faulty=true;
             Log.e(TAG, "Pattern.Compile() exception: "+e.getMessage());
         }
+
         Matcher m=null;
         if(!faulty && p!=null) {
             try {
@@ -266,11 +276,29 @@ public class DataEdit extends BroadcastReceiver {
 //        }
         try {
             if(m.matches() || global){ //redundant with Patter.matches above
-                returnString = m.replaceAll(replacementText);
-                sOut.delete(0,sOut.length());
-                sOut.append(returnString);
-                bRet=true;
-                Log.d(TAG, String.format("returnString= %s", returnString));
+                Log.d(TAG, String.format("m.matches()=%s, global=%s", m.matches(), global));
+                if(global){
+                    if(m.find()){
+                        returnString = m.replaceAll((replacementText));
+                        sOut.delete(0,sOut.length());
+                        sOut.append(returnString);
+                        bRet=true;
+                        Log.d(TAG, String.format("returnString= %s", returnString));
+                    }else{
+                        //no global match found
+                        sOut.delete(0, sOut.length());
+                        sOut.append(""); //empty return
+                        bRet=false;
+                        Log.d(TAG, String.format("no match found for global regex %s", searchpattern));
+                    }
+                }
+                else {
+                    returnString = m.replaceAll(replacementText);
+                    sOut.delete(0, sOut.length());
+                    sOut.append(returnString);
+                    bRet = true;
+                    Log.d(TAG, String.format("returnString= %s", returnString));
+                }//is global
             }
             else {
                 Log.d(TAG, "rule does not match");

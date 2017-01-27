@@ -69,6 +69,8 @@ class rule implements Serializable{
                 global=false;
             }
         }
+        if(regex.length()==0 || replace.length()==0)
+            valid=false;
     }
     @Override
     public String toString(){
