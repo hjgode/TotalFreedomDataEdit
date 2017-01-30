@@ -125,6 +125,59 @@ For example:
 
 will output the data with the prefix "Aim Id matches: " only for barcode with AimID "]A0".
 
+# To escape or not escape characters?
+
+For Java strings itself and Java Regex the escape symbol '\' has a special meaning. Java escape sequences need to be used to describe a non-printable character or code.
+
+## Java Escape sequences
+
+Codes that need to be replaced by a Java escape sequence. The rule file has to follow the syntax for java strings.
+
+    | Escape Sequence | Description                                                 |
+    | --------------- | ----------------------------------------------------------- |
+    | \t              | Inserts a tab in the text at this point. 					|
+    | \b 			  | Inserts a backspace in the text at this point. 				|
+    | \n 			  | Inserts a newline in the text at this point. 				|
+    | \r 		 	  | Inserts a carriage return in the text at this point. 		|
+    | \f 			  | Inserts a form feed in the text at this point. 				|
+    | \' 			  | Inserts a single quote character in the text at this point. |
+    | \" 			  | Inserts a double quote character in the text at this point. |
+    | \\ 			  | Inserts a backslash character in the text at this point. 	|
+
+## Java Regex escape sequences
+
+To let Java not look at these as Java escape sequences, the escape symbol has to be doubled. Otherwise Java sees the single backslash and looks for a known escape character, for example a t, r or n. If that does not follow, the Java string gets corrupted.
+
+If the regex should look for a single digit, the string '\d' is OK for the Java Regex but not as Java string. So it has to be written as '\\d' in the string to let the Regex get a '\d'.
+
+    | char | Regex Meaning                      | escaped regex | escaped Java  |
+    |------|------------------------------------|---------------|---------------|
+    |  \   | to look for a single backslash     | \\            | \\\\          |
+    |  .   | to look for a period               | \.            | \\.           |
+    |  [   | start char class of [a-z]          | \[            | \\[           |
+    |  ]   | end char class of [a-z]            | \]            | \\]           |
+    |  {   | start quantifier of {N}            | \{            | \\{           |
+    |  }   | end quantifier of {N}              | \}            | \\{           |
+    |  (   | start group separator              | \(            | \\(           |
+    |  )   | end group separator                | \)            | \\)           |
+    |  *   | quantifier, zero or many           | \*            | \\*           |
+    |  +   | quantifier, one or many            | \+            | \\+           |
+    |  -   | set separator in [a-z]             | \-            | \\-           |
+    |  ?   | quantifier or back reference       | \?            | \\?           |
+    |  ^   | anchor of begin of line            | \^            | \\^           |
+    |  $   | groupd reference in replace text   | \$            | \\$           |
+    |  |   | 'or' operator                      | \|            | \\|           |
+
+More examples
+
+	Regex	Meaning				Java string
+	\d		single digit		\\d
+	\D		non-digit			\\D
+	\s		white space			\\s
+	\w		word char			\\w
+	\W		non-word char		\\W
+	\b		word boundary		\\b
+
 # Simple Regex
 
 Regex is regular expressions and a way to define a pattern for a search and replace. This demo plugin uses Java Regex.
