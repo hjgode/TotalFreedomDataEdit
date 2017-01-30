@@ -52,6 +52,7 @@ public class SaveToFile {
         for (String s:strings) {
 //            String t= Pattern.quote(s);
 //            Log.d(TAG, "quoted pattern string: '"+t+"'");
+            //save as escape-for-JAVA
             String escaped=DataEditUtils.getJavaEscaped(s);
             sb.append(escaped+DataEditUtils.ruleDelimiter());
         }

@@ -45,10 +45,10 @@
                 android:layout_centerHorizontal="true"/>
 
             <Button
-                android:text="back"
+                android:text="save list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnCloseListActivity"
+                android:id="@+id/btnSaveListActivity"
                 android:layout_alignParentRight="true"/>
         </RelativeLayout>
     </LinearLayout>

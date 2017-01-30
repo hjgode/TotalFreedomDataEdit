@@ -124,6 +124,7 @@ public class DataEdit extends BroadcastReceiver {
                 "g=>([0-9]{6})=>M$1 ex5",
                 "# example 5b",
                 "g=>(\\d{6})=>M$1 ex5b",
+                "g=>\u001d=>.fnc1.",
 //                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
 //                "]A0=>(.*)=>$1\n",
 //                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
@@ -134,7 +135,7 @@ public class DataEdit extends BroadcastReceiver {
         String[] sRulesTest=readIniFile.getRules();
 
         if(
-                Debug.isDebuggerConnected() ||
+//                Debug.isDebuggerConnected() ||
                         sRulesTest.length==0
                 ) {
             //create a default rule file if there are no rules or if debugger is attached
@@ -171,7 +172,7 @@ public class DataEdit extends BroadcastReceiver {
                             formattedOutput=buffer.toString();
                             doLog(String.format("Matched rule: %s", DataEditUtils.getHexedString(r.toString())),context);
                             if(r.stop)
-                                break;
+                                break; //terminate for loop
                             else{
                                 doLog("'No stop rule' matched. Continue with next rule...", context);
                                 ScanResult=formattedOutput;
@@ -186,7 +187,7 @@ public class DataEdit extends BroadcastReceiver {
                         bMatchedFound=false;
                     }
                 }
-                else{
+                else{ //no AimID in rule
                     doLog("No aimID used in regex", context);
                     if(doRegex(ScanResult, r.regex, r.replace, buffer, r.global)) {
                         bMatchedFound=true;
@@ -207,7 +208,8 @@ public class DataEdit extends BroadcastReceiver {
             else{
                 doLog(String.format("Not a valid rule: %s", r.toString()), context);
             }
-        }
+        } //for loop end
+
         if(bMatchedFound)
             doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
         else {

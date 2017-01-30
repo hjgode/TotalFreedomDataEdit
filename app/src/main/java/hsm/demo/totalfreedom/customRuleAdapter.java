@@ -77,6 +77,7 @@ public class CustomRuleAdapter extends BaseAdapter {
         chkGlobal.setChecked(currentItem.global);
 
         textViewAimID.setText(currentItem.aimID);
+        //internally using unEscapedJAVA, so get the escaped JAVA to show
         textViewRegex.setText(DataEditUtils.getJavaEscaped(currentItem.regex));
         textViewReplace.setText(DataEditUtils.getJavaEscaped(currentItem.replace));
 

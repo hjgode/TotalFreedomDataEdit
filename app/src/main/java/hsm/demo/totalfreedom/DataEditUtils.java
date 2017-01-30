@@ -25,9 +25,38 @@ import org.apache.commons.lang3.StringUtils;
 
 public class DataEditUtils {
 
+    /*
+    public static final String unescapeJava(String input)
+    Unescapes any Java literals found in the String. For example, it will turn a sequence of '\' and 'n' into a newline character, unless the '\' is preceded by another '\'.
+
+    Parameters:
+    input - the String to unescape, may be null
+    Returns:
+    a new unescaped String, null if null string input
+     */
     static String getJavaEscaped(String s){
         return StringEscapeUtils.escapeJava(s);
     }
+    /*
+    public static final String escapeJava(String input)
+    Escapes the characters in a String using Java String rules.
+
+    Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)
+
+    So a tab becomes the characters '\\' and 't'.
+
+    The only difference between Java strings and JavaScript strings is that in JavaScript, a single quote and forward-slash (/) are escaped.
+
+    Example:
+
+     input string: He didn't say, "Stop!"
+     output string: He didn't say, \"Stop!\"
+
+    Parameters:
+    input - String to escape values in, may be null
+    Returns:
+    String with escaped values, null if null string input
+     */
     static String getJavaUnescaped(String s){
         return StringEscapeUtils.unescapeJava(s);
     }

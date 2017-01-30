@@ -14,16 +14,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static android.R.attr.data;
-import static android.R.attr.theme;
-
 public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-    Button btnClose, btnAdd;
+    Button btnSave, btnAdd;
     ListView myListView;
     ArrayList<rule> rules=new ArrayList<>();
     CustomRuleAdapter ruleAdapter;
@@ -45,7 +41,7 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
 
         //buttons
         btnAdd=(Button)findViewById(R.id.btnAdd);
-        btnClose=(Button)findViewById(R.id.btnCloseListActivity);
+        btnSave =(Button)findViewById(R.id.btnSaveListActivity);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +57,7 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
             }
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveChanges(getApplicationContext());

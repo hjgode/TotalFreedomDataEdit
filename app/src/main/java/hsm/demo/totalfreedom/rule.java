@@ -27,12 +27,12 @@ class rule implements Serializable{
 
      */
 
-    public String aimID="";
-    public String regex="";     // the regular expression defining what to search for
-    public String replace="";   // the replacement pattern to return
-    public boolean valid=false;
-    public boolean stop=true;
-    public boolean global=false;    //match the pattern in sequence or do a search/replace
+    public String aimID="";         // var to store AimID of rule
+    public String regex="";         // the regular expression defining what to search for
+    public String replace="";       // the replacement pattern to return
+    public boolean valid=false;     // internal to mark invalid rules
+    public boolean stop=true;       // var to hold if rule is a 'no-stop-rule'
+    public boolean global=false;    // match the pattern in sequence or do a search/replace
 
     public rule(String sIn){
         if(sIn.startsWith("#")){
@@ -53,6 +53,7 @@ class rule implements Serializable{
                     aimID=s[0].substring(1);
                 }
                 if(s[0].startsWith("+g")){
+                    stop=false;
                     global=true;
                     aimID=s[0].substring(2);
                 }
@@ -67,6 +68,7 @@ class rule implements Serializable{
                 replace=s[1];
                 valid=true;
                 global=false;
+                stop=true;
             }
         }
         if(regex.length()==0 || replace.length()==0)

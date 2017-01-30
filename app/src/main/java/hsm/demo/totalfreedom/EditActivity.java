@@ -48,12 +48,32 @@ public class EditActivity extends AppCompatActivity
         chkNoStop.setChecked(!theRule.stop);
 
         txtAimID=(EditText) findViewById(R.id.editText_AimID);
+        aimIdList=(Spinner)findViewById(R.id.aimIDlist);
+        //fill list
+        ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimId.AimIds);
+        dataAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
+        aimIdList.setAdapter(dataAdapter);
+        //already sets
+        aimIdList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AimId a=AimId.AimIds[position];
+                txtAimID.setText(a.aimid);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //set AimID to rule's AimID
         txtAimID.setText(theRule.aimID);
 //        txtAimID.setOnClickListener(this);
         txtAimID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                currentEditText=txtAimID;
+                if(hasFocus)
+                    currentEditText=txtAimID;
             }
         });
 
@@ -86,12 +106,13 @@ public class EditActivity extends AppCompatActivity
                 theRule.aimID=((EditText)findViewById(R.id.editText_AimID)).getText().toString();
 
                 String regexStr=txtRegex.getText().toString();
-                //theRule.regex=DataEditUtils.getJavaUnescaped (regexStr);
-                theRule.regex=regexStr;
+                //internally we use unescaped JAVA
+                theRule.regex=DataEditUtils.getJavaUnescaped (regexStr);
+                //theRule.regex=regexStr;
 
                 String replaceStr=txtReplace.getText().toString();
-                //theRule.replace=DataEditUtils.getJavaUnescaped (replaceStr);
-                theRule.replace=replaceStr;
+                theRule.replace=DataEditUtils.getJavaUnescaped (replaceStr);
+                //theRule.replace=replaceStr;
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("theRule", theRule);
@@ -109,23 +130,7 @@ public class EditActivity extends AppCompatActivity
                 finish();
             }
         });
-        aimIdList=(Spinner)findViewById(R.id.aimIDlist);
-        //fill list
-        ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimId.AimIds);
-        dataAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
-        aimIdList.setAdapter(dataAdapter);
-        aimIdList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AimId a=AimId.AimIds[position];
-                txtAimID.setText(a.aimid);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
 

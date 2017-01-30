@@ -61,6 +61,7 @@ public class ReadIniFile {
                     line=new String(byteBuffer.array(), Charset.forName(DataEditUtils.myCharset()));
                     String[] lines=line.split(DataEditUtils.ruleDelimiter()); //x0d x0a
                     for (String theline:lines) {
+                        //unescape for JAVA
                         _rulesList.add(DataEditUtils.getJavaUnescaped(theline));
                         Log.d(TAG, "read: "+theline);
                     }

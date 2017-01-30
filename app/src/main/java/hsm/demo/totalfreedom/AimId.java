@@ -30,6 +30,7 @@ public class AimId {
     }
 
     public static AimId AimIds[]={
+            new AimId("", "no AimID"),
             new AimId("]d2", "GS1 DataMatrix"),
             new AimId("]C1", "GS1 128 symbol"),
             new AimId("]e0", "GS1 Databar"),
