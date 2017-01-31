@@ -450,7 +450,7 @@ Please note that these links are provided just as a sample and my or may not wor
 
 ![myregexp](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/myregexcom.png)
 
-* www.regexplanet.com/advanced/java/
+* regexplanet.com/advanced/java/
 
 ![regexplanet](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexplanetcom.png)
 
