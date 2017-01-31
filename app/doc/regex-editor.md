@@ -2,7 +2,7 @@
 
 The demo TotalFreedom Regex plugin comes with an editor activity. In the TotalFreedom main screen hide the software keyboard and tap on [Rules List] to get a list of the active rules.
 
-![main screen](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/edit1.png.png)
+![main screen](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/edit1.png)
 
 ![rules list](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/edit2_list.png)
 
