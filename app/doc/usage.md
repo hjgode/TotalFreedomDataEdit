@@ -448,16 +448,16 @@ Please note that these links are provided just as a sample and my or may not wor
 
 * myregexp.com
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/myregexcom.png)
+![myregexp](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/myregexcom.png)
 
 * www.regexplanet.com/advanced/java/
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexplanetcom.png)
+![regexplanet](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexplanetcom.png)
 
 * regexe.com
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexcom.png)
+![regexe](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexcom.png)
 
 * regex101.com
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regex101com.png)
+![regex101](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regex101com.png)
