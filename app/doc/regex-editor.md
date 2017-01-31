@@ -28,6 +28,8 @@ If the 'Search for' (the regex) starts with a '#' symbol, the rule will be treat
 
 Tapping on one of the small texts on the bottom of the screen inserts pre-defined, commonly used Regex sequences at the current text cursor position (carret).
 
+![edit rule](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/edit5_edit_rule_texts.png)
+
 Finally tap on [Save] to save the new or changed rule. Tapping the [CANCEL] button will discard the changes.
 
 To save the changed rules list, tap on [SAVE LIST] to save the changes to the rules file.
