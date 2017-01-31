@@ -81,41 +81,47 @@ A rule line starting with a # will be treated as comment and will not be further
 
     # this is a comment;
 
-## A rule line
+### A rule line
 
-Every rule line can have either two or three sections or fields. Fields have to be separated by 
+Every rule line can have either two or three sections or fields:
+
+	regex=>replacement
+
+	Options/AimID=>regex=>replacement
+
+Fields have to be separated by 
 
     =>
 
-and the rule lines have to end with
+and the rule lines in a file have to end with:
 
     ;\r\n
 
 (A semicolon followed by carriage return / line feed.)
  
-### Two-field rules
+#### Two-field rules
 
 The first field defines the pattern that a barcode data must match for the rule being executed. The second field is the replacement to be used if the pattern matches the barcode data.
 
-    pattern=>replacement;
+    regex pattern=>replacement;
 
-### Three-field rules
+#### Three-field rules
 
 The first field may contain the option '+' and or 'g' and may be followed by the Symbology AimID that must match the AimID of the scanned barcode.
 
     [+][g][AimID]=>pattern=>replacement;
 
-#### The '+' option
+##### The '+' option
 
 Rules are processed line by line from top to bottom. If a rule matches, the processing of further rule lines will not take place. If the '+' option is used, the rule processing will not stop after a rule line is matched.
 
-#### The 'g' option
+##### The 'g' option
 
 The demo plugin can match a pattern on the whole data or do a simple search-and-replace. If the 'g' option is used, the pattern and replacement field are used for a global search&replace.
 
 * The 'g' option implies also as the 'no-stop' handling. A following rule will be processed.
 
-#### The AimID
+##### The AimID
 
 The standard AimID can be used to let the demo plugin match only against barcode that has the same AimID.
 
@@ -124,6 +130,14 @@ For example:
     ]A0=>(.*)=>Aim Id matches for: $1;
 
 will output the data with the prefix "Aim Id matches: " only for barcode with AimID "]A0".
+
+##### The regex
+
+The regex field defines the pattern to be searched for in the input data.
+
+##### The replacment
+
+The replacement defines the output for scanned data if the regex pattern matches.
 
 # To escape or not escape characters?
 
@@ -426,3 +440,24 @@ or you will get (possibly) unexpected results. With all ex1 rules enabled you wi
 ## Note
 
 The ; is not part of the rule. ;\r\n is used to split the rules file into rules.
+
+# Testing
+
+There are various web sites that enable online testing of java regex. This should be used to verify a regex will work for given input data and outs pus the desired changed data.
+Please note that these links are provided just as a sample and my or may not work for you. There is no warranty.
+
+* myregexp.com
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/myregexcom.png)
+
+* www.regexplanet.com/advanced/java/
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexplanetcom.png)
+
+* regexe.com
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexcom.png)
+
+* regex101.com
+
+![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regex101com.png)
