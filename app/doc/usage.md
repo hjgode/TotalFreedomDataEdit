@@ -148,7 +148,7 @@ Codes that need to be replaced by a Java escape sequence. The rule file has to f
 
 To let Java not look at these as Java escape sequences, the escape symbol has to be doubled. Otherwise Java sees the single backslash and looks for a known escape character, for example a t, r or n. If that does not follow, the Java string gets corrupted.
 
-If the regex should look for a single digit, the string '\d' is OK for the Java Regex but not as Java string. So it has to be written as '\\d' in the string to let the Regex get a '\d'.
+Not all of the following escape sequences have to be used all the time. The '-', for example, has only a special meaning inside a set like [a-z]. To look for a, b, c, or -, for example, you can use [abc\-].
 
     | char | Regex Meaning                      | escaped regex | escaped Java  |
     |------|------------------------------------|---------------|---------------|
@@ -168,7 +168,9 @@ If the regex should look for a single digit, the string '\d' is OK for the Java 
     |  $   | groupd reference in replace text   | \$            | \\$           |
     |  |   | 'or' operator                      | \|            | \\|           |
 
-More examples
+### More examples
+
+If the regex should look for a single digit, the string '\d' is OK for the Java Regex but not as Java string. So it has to be written as '\\d' in the string to let the Regex get a '\d'.
 
 	Regex	Meaning				Java string
 	\d		single digit		\\d
