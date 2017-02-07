@@ -190,6 +190,7 @@ If the regex should look for a single digit, the string '\d' is OK for the Java 
 	\d		single digit		\\d
 	\D		non-digit			\\D
 	\s		white space			\\s
+	\S		non-white space		\\S
 	\w		word char			\\w
 	\W		non-word char		\\W
 	\b		word boundary		\\b

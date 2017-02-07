@@ -41,6 +41,13 @@ public class TotalFreedomTest extends AppCompatActivity {
             }
         });
 
+        Button btnTEST=(Button)findViewById(R.id.buttonTEST);
+        btnTEST.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyRegex.DoTests();
+            }
+        });
         //verify permissions
         hasPermissions();
         // Assume thisActivity is the current activity

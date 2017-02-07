@@ -34,8 +34,8 @@ public class DataEditUtils {
     Returns:
     a new unescaped String, null if null string input
      */
-    static String getJavaEscaped(String s){
-        return StringEscapeUtils.escapeJava(s);
+    static String getJavaUnescaped(String s){
+        return StringEscapeUtils.unescapeJava(s);
     }
     /*
     public static final String escapeJava(String input)
@@ -57,8 +57,8 @@ public class DataEditUtils {
     Returns:
     String with escaped values, null if null string input
      */
-    static String getJavaUnescaped(String s){
-        return StringEscapeUtils.unescapeJava(s);
+    static String getJavaEscaped(String s){
+        return StringEscapeUtils.escapeJava(s);
     }
 
     public static String myCharset(){

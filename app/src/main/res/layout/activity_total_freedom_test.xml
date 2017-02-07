@@ -49,4 +49,13 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentEnd="true"
         android:id="@+id/btnRulesList" />
+
+    <Button
+        android:text="TEST"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonTEST"
+        android:layout_alignBaseline="@+id/btnRulesList"
+        android:layout_alignBottom="@+id/btnRulesList"
+        android:layout_toStartOf="@+id/btnRulesList" />
 </RelativeLayout>
