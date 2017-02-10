@@ -22,35 +22,14 @@ public class MyRegex {
      */
     static void DoTests(){
         String[][] testRulesData=new String[][]{
+                //regex string, scandata
                 {"(.*)=>$1", "abc 123"},
                 {"(\\S+)(\\s+)(\\S+)=>$1-$3", "abc 123"}, //two 'words' separated by space, gives abc-123
                 {"(\\(\\d\\))(.+)(\\(\\d\\))(\\d+)=>$1-$2-$3-$4", "(1)234(2)abc"}, //gives no match as last group of digits is no there
                 {"(\\(\\d\\))(.+)(\\(\\d\\))(\\d+)=>$1-$2-$3-$4", "(1)234(2)567"}, //gives 1-234-2-567, shows how to look for braces
-                {"g=>=>.fnc1.", "123\u001d456\u001d789"}, //replace all FNC1
+                {"g=>\u001d=>.fnc1.", "123\u001d456\u001d789"}, //replace all FNC1, watch your step, Android Studio will not show some \u001d
+                {"\u001d=>.fnc1.", "123\u001d456\u001d789"}, //replaces only if string is FNC1 only, watch your step, Android Studio will not show some \u001d
                 {"(\\d{3})([0-9]{3})(\\d\\d\\d)=>$1 $2 $3","123456789"}, //different ways to look for a count of digits
-        };
-
-        String[] sRules= new String[]{
-                "# this is a comment",
-                "# example 1",
-                "([0-9]{6})=>M$1 ex1",
-                "g=>([0-9]{6})=>M$1 ex1a",
-                "(.*)\\s([0-9]{6})\\s(.*)=>M$2 ex1b",
-                "# example 2",
-                "([0-9]{3})([0-9]{2})([0-9]{4})=><SSN>$1-$2-$3</SSN> ex2",
-                "# example 3",
-                "...(.{13}).....=>$1 ex3",
-                "# example 4",
-                "([a-zA-Z]+) (\\w+)=>$2, $1 ex4",
-                "# example 5",
-                "g=>([0-9]{6})=>M$1 ex5",
-                "# example 5b",
-                "g=>(\\d{6})=>M$1 ex5b",
-                "g=>\u001d=>.fnc1.",
-//                "]A0=>(.{2})(.{14})(.*)=>$2\n", //\n gives x0A
-//                "]A0=>(.*)=>$1\n",
-//                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
-                "(.*)=>no match: $1\n"
         };
 
         StringBuilder result=new StringBuilder();
