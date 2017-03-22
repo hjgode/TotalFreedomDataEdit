@@ -53,6 +53,10 @@ After the apk is installed there is also a Test application available called "To
 
 The Demo Totalfreedom plugin is configured by a text rules file.
 
+## Rules Editor
+
+There is also the possibilty to edit rules with the built-in [Rules Editor](https://github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/regex-editor.md)
+
 ## The rules file
 
 The demo plugin tool uses the file
@@ -135,7 +139,7 @@ will output the data with the prefix "Aim Id matches: " only for barcode with Ai
 
 The regex field defines the pattern to be searched for in the input data.
 
-##### The replacment
+##### The replacement
 
 The replacement defines the output for scanned data if the regex pattern matches.
 
