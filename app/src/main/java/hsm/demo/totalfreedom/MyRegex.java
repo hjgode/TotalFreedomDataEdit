@@ -1,6 +1,8 @@
 package hsm.demo.totalfreedom;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.UnknownFormatConversionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static hsm.demo.totalfreedom.DataEdit.BROADCAST_ACTION;
 
 /**
  * Created by E841719 on 07.02.2017.
@@ -35,14 +39,18 @@ public class MyRegex {
         StringBuilder result=new StringBuilder();
         String sTestData="", sAimID="";
         Log.d(TAG, "########################## TESTING #######################################");
+        doLog("########################## TESTING #######################################");
         for (String[]testTupple:testRulesData) {
             result=new StringBuilder();
             DoTest(new String[]{testTupple[0]}, sAimID, testTupple[1], result);
             Log.d(TAG, "RESULT '"+DataEditUtils.getJavaEscaped(testTupple[1])+"' REPLACED BY '"+ DataEditUtils.getJavaEscaped(result.toString())+"'");
+            doLog("RESULT '"+DataEditUtils.getJavaEscaped(testTupple[1])+"' REPLACED BY '"+ DataEditUtils.getJavaEscaped(result.toString())+"'");
             Log.d(TAG, "--------------------------------------------------------------------------");
+            doLog("--------------------------------------------------------------------------");
         }
 
         Log.d(TAG, "##########################   END   #######################################");
+        doLog("##########################   END   #######################################");
     }
 
     private static void DoTest(String[] sRules, String aimID, String scannedData, StringBuilder regExResult){
@@ -220,5 +228,26 @@ public class MyRegex {
 
         return bRet;
     }
+    static void doLog(String s){
+        Log.d(TAG, s);
+        doUpdate(s, TotalFreedomTest.getAppContext());
+    }
 
+    static void doUpdate(String s, Context context_) {
+        class updateUI implements Runnable {
+            String str;
+            Context _context;
+            updateUI(String s, Context c) {
+                str = s;
+                _context=c;
+            }
+            public void run() {
+                Intent _intent=new Intent(BROADCAST_ACTION);
+                _intent.putExtra("text", str);
+                _context.sendBroadcast(_intent);
+            }
+        }
+        Thread t = new Thread(new updateUI(s, context_));
+        t.start();
+    }
 }

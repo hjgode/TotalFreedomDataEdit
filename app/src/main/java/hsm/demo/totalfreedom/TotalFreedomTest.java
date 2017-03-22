@@ -24,10 +24,17 @@ public class TotalFreedomTest extends AppCompatActivity {
     Handler handler;
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE=42;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE=43;
+    private static Context context;
+
+    public static Context getAppContext() {
+        return TotalFreedomTest.context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TotalFreedomTest.context = getApplicationContext();
+
         setContentView(R.layout.activity_total_freedom_test);
         textView=(TextView)findViewById(R.id.textView2);
         textView.setMovementMethod(new ScrollingMovementMethod());
