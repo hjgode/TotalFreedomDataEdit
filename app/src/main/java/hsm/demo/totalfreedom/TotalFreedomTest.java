@@ -11,16 +11,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static hsm.demo.totalfreedom.DataEdit.BROADCAST_ACTION;
+import static hsm.demo.totalfreedom.DataEditUtils.getHexedString;
+
 public class TotalFreedomTest extends AppCompatActivity {
 
     TextView textView;
+    EditText editText1;
     Handler handler;
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE=42;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE=43;
@@ -39,6 +46,20 @@ public class TotalFreedomTest extends AppCompatActivity {
         textView=(TextView)findViewById(R.id.textView2);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
+        editText1=(EditText)findViewById(R.id.editText1);
+        editText1.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                // you can call or do what you want with your EditText here
+                Intent _intent=new Intent(BROADCAST_ACTION);
+                _intent.putExtra("text", getHexedString(s.toString()));
+                getAppContext().sendBroadcast(_intent);
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
         Button btnShowList=(Button)findViewById(R.id.btnRulesList);
         btnShowList.setOnClickListener(new View.OnClickListener() {
             @Override
