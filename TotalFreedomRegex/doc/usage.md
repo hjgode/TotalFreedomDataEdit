@@ -33,21 +33,21 @@ Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Setting
 
 ![Settings 1](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc/DataProcessingSettings_01.png)
 
-![Settings 2](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/blob/master/TotalFreedomRegex/doc/DataProcessingSettings_02.png)
+![Settings 2](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc/DataProcessingSettings_02.png)
 
 ### Android Permissions
 
 As the Plugin uses a shared directory to read the rules file, it needs android.permission.READ_EXTERNAL_STORAGE and android.permission.WRITE_EXTERNAL_STORAGE. Without these permissions the application code does not work. The write permissions is used to write a default, standard rules file as a starter.
 
-![Android Permissions for TotalFreedomTest](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/AppPermissions_01.png)
+![Android Permissions for TotalFreedomTest](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//AppPermissions_01.png)
 
 ### Usage - TotalFreedomTest
 
 After the apk is installed there is also a Test application available called "TotalFreedomTest". The plugin itself does not need an application to run. The test application has an input field, that can be used to show the wedged data and a information area, that shows internals of the plugin work.
 
-![TotalFreedomTest_01](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/TotalFreedomTest_01.png)
+![TotalFreedomTest_01](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//TotalFreedomTest_01.png)
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/TotalFreedomTest_02.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//TotalFreedomTest_02.png)
 
 # Configuration
 
@@ -67,7 +67,7 @@ The demo plugin tool uses the file
 
 The rule file can be copied from and to your PC:
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/storage_documents.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//storage_documents.png)
 
 The list of rules is read on every scanned barcode. Any change will be applied on next barcode scan.
 
@@ -330,9 +330,9 @@ With the g option, any 6 digit will be replaced by M plus the 6 digits, the rest
 
 Will find the 6 digits surrounded by white space. A scanned data string in which the six numeric characters are not consecutive would not be passed.
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-6digits.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-6digits.png)
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-3digits_blank_6digits_blank_3digits.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-3digits_blank_6digits_blank_3digits.png)
 
 ## Regex Rule Example 2
 
@@ -354,9 +354,9 @@ is matched and reformatted to:
 
 A data string such as 1234567890 will not match as the regex will match  be truncated to include only the first nine digits, since it consists of more numeric characters than processed by the regex pattern string.
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-9digits.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-9digits.png)
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-1234567890.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-1234567890.png)
 
 ## Regex Rule Example 3
 
@@ -375,7 +375,7 @@ is passed and reformatted to:
 	1234567890123
 
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-AAA1234567890123BBBBB.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-AAA1234567890123BBBBB.png)
 
 ## Regex Rule Example 4
 
@@ -395,7 +395,7 @@ is passed, and the data is modified to read:
 	
 	Gordon, Dexter
 
-![TotalFreedomTest_02](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/sample-Dexter_Gordon.png)
+![TotalFreedomTest_02](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//sample-Dexter_Gordon.png)
 
 # Regex Rule Example 5
 
@@ -453,16 +453,16 @@ Please note that these links are provided just as a sample and my or may not wor
 
 * myregexp.com
 
-![myregexp](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/myregexcom.png)
+![myregexp](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//myregexcom.png)
 
 * regexplanet.com/advanced/java/
 
-![regexplanet](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexplanetcom.png)
+![regexplanet](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//regexplanetcom.png)
 
 * regexe.com
 
-![regexe](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regexcom.png)
+![regexe](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//regexcom.png)
 
 * regex101.com
 
-![regex101](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/regex101com.png)
+![regex101](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//regex101com.png)
