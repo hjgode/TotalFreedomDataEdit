@@ -55,7 +55,7 @@ The Demo Totalfreedom plugin is configured by a text rules file.
 
 ## Rules Editor
 
-There is also the possibilty to edit rules with the built-in [Rules Editor](https://github.com/hjgode/TotalFreedomDataEdit/blob/master/app/doc/regex-editor.md)
+There is also the possibilty to edit rules with the built-in [Rules Editor](https://github.com/hjgode/TotalFreedomDataEdit/blob/master/TotalFreedomRegex/doc/regex-editor.md)
 
 ## The rules file
 
