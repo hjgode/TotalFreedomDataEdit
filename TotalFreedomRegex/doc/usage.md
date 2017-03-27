@@ -31,9 +31,9 @@ Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Setting
 
     hsm.demo.totalfreedom/.DataEdit
 
-![Settings 1](https://github.com/hjgode/TotalFreedomDataEdit/blob/master/TotalFreedomRegex/doc/AppPermissions_01.png)
+![Settings 1](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc/DataProcessingSettings_01.png)
 
-![Settings 2](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/master/app/doc/DataProcessingSettings_02.png)
+![Settings 2](https://raw.githubusercontent.com/hjgode/TotalFreedomDataEdit/blob/master/TotalFreedomRegex/doc/DataProcessingSettings_02.png)
 
 ### Android Permissions
 
