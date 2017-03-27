@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Debug;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -14,13 +15,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static hsm.demo.totalfreedom.DataEdit.BROADCAST_ACTION;
 import static hsm.demo.totalfreedom.DataEditUtils.getHexedString;
 
@@ -32,6 +36,8 @@ public class TotalFreedomTest extends AppCompatActivity {
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE=42;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE=43;
     private static Context context;
+
+    Button btnLiveTest;
 
     public static Context getAppContext() {
         return TotalFreedomTest.context;
@@ -69,13 +75,44 @@ public class TotalFreedomTest extends AppCompatActivity {
             }
         });
 
+        //TODO: use in debug only
         Button btnTEST=(Button)findViewById(R.id.buttonTEST);
+        btnTEST.setVisibility(View.GONE);
         btnTEST.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MyRegex.DoTests();
             }
         });
+
+        //TODO: add live test option
+        btnLiveTest=(Button)findViewById(R.id.btnLiveTestRule);
+        btnLiveTest.setVisibility(View.GONE);
+        btnLiveTest.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   DataEdit de=new DataEdit();
+                   Intent intent=new Intent();//"hsm.demo.totalfreedom/.DataEdit"); // com.honeywell.decode.intent.action.EDIT_DATA
+                   intent.setClassName("hsm.demo.totalfreedom", "DataEdit");
+                   intent.setAction("com.honeywell.decode.intent.action.EDIT_DATA");
+                   intent.putExtra("data",editText1.getText().toString());
+                   intent.putExtra("aimId", "]C1");
+                   byte[] buf=null;
+                   try {
+                       buf = editText1.getText().toString().getBytes("UTF-16");
+                   }catch (UnsupportedEncodingException ex){}
+                   intent.putExtra("dataBytes", buf);
+
+                   de.onReceive(getAppContext(), intent);
+               }
+           }
+        );
+
+        if(Debug.isDebuggerConnected()) {
+            btnTEST.setVisibility(View.VISIBLE);
+            btnLiveTest.setVisibility(View.VISIBLE);
+        }
+
         //verify permissions
         hasPermissions();
         // Assume thisActivity is the current activity

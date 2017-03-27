@@ -149,8 +149,8 @@ public class EditActivity extends AppCompatActivity
 //    }
 
     //onClick has been defined in layout file
-    void perform_onInsertClick(View view){
-        TextView tv= (TextView) view;
+    public void perform_onInsertClick(View v){
+        TextView tv= (TextView) v;
         switch(tv.getId()) {
             case R.id.textAnyChar:
                 insertText(currentEditText, ".");

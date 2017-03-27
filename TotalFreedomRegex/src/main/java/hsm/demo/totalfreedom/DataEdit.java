@@ -57,7 +57,7 @@ public class DataEdit extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String ScanResult = intent.getStringExtra("data");//Read the scan result from the Intent
-
+        Log.d(TAG, "Package" + intent.getPackage() + ", " +intent.toString());
 //        this.myContext = context;//you can retrieve context from onReceive argument
 //        this.myIntent = new Intent(BROADCAST_ACTION);
         logText.append(ScanResult);
@@ -72,11 +72,13 @@ public class DataEdit extends BroadcastReceiver {
         if(myDebug) {
             //for debugging?
             byte[] byteData = intent.getByteArrayExtra("dataBytes");
-            StringBuilder sb = new StringBuilder();
-            for (byte b : byteData) {
-                sb.append(String.format("0x%02x,", b));
+            if(byteData!=null) {
+                StringBuilder sb = new StringBuilder();
+                for (byte b : byteData) {
+                    sb.append(String.format("0x%02x,", b));
+                }
+                Log.d(TAG, "dataBytes=" + sb.toString());
             }
-            Log.d(TAG, "dataBytes=" + sb.toString());
         }
 
         /*
