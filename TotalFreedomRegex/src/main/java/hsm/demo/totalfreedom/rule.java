@@ -1,5 +1,6 @@
 package hsm.demo.totalfreedom;
 
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ class rule implements Serializable{
         }else{
             //no comment
             String[] s=sIn.split("=>");
+            Log.d("rule read", "sIn="+sIn+", split.len="+s.length);
             if(s.length==3){
                 if(s[0].startsWith("+")){
                     stop=false;
@@ -64,14 +66,43 @@ class rule implements Serializable{
             }
             else if(s.length==2){
                 aimID="";
-                regex=s[0];
-                replace=s[1];
-                valid=true;
-                global=false;
-                stop=true;
+                if(s[0].startsWith("+g")) {
+                    global = true;
+                    if(s[0].length()>2)
+                        aimID = s[0].substring(1);
+                    regex=s[1];
+                    replace="";
+                    valid = true;
+                    stop = false;
+                }
+                else if(s[0].startsWith("g")) {
+                    global = true;
+                    if(s[0].length()>1)
+                        aimID = s[0].substring(1);
+                    regex=s[1];
+                    replace="";
+                    valid = true;
+                    stop = true;
+                }
+                else if(s[0].startsWith("+")) {
+                    global = false;
+                    if(s[0].length()>1)
+                        aimID = s[0].substring(1);
+                    regex=s[1];
+                    replace="";
+                    valid = true;
+                    stop = false;
+                }
+                else {
+                    regex = s[0];
+                    replace = s[1];
+                    valid = true;
+                    global = false;
+                    stop = true;
+                }
             }
         }
-        if(regex.length()==0 || replace.length()==0)
+        if(regex.length()==0)// || replace.length()==0)
             valid=false;
     }
     @Override

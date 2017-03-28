@@ -21,10 +21,29 @@
                 <action android:name="hsm.demo.totalfreedom.displayevent" />
             </intent-filter>
         </activity>
-
+<!--
         <receiver android:name=".DataEdit">
             <intent-filter>
                 <action android:name="hsm.demo.DataEdit" />
+            </intent-filter>
+        </receiver>
+-->
+        <receiver
+            android:name=".DataEdit"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RegEx">
+            <intent-filter>
+                <action android:name="com.honeywell.decode.intent.action.EDIT_DATA" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".DataEditSettings"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RegEx Settings">
+            <intent-filter>
+                <action android:name="com.honeywell.decode.intent.action.EDIT_DATA_SETTINGS" />
             </intent-filter>
         </receiver>
 
