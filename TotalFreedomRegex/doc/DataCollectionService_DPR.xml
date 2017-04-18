@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ConfigDoc name="DataCollectionService">
+	<HHPReserved name="Tool Version">
+		<Key name="EXMVersion">1.0.1</Key>
+	</HHPReserved>
+	<Section name="wedge">
+		<Key name="PROFILE_LIST">dcs.scanner.imager/DEFAULT;</Key>
+		<Section name="profiles">
+			<Section name="dcs.scanner.imager">
+				<Section name="DEFAULT">
+					<Key name="DPR_EDIT_DATA_PLUGIN">hsm.demo.totalfreedom/.DataEdit</Key>
+					<Key name="DPR_DATA_INTENT_ACTION"/>
+					<Key name="DPR_SYMBOLOGY_PREFIX">none</Key>
+					<Key name="DPR_LAUNCH_EZ_CONFIG">true</Key>
+					<Key name="DPR_DATA_INTENT_PACKAGE_NAME"/>
+					<Key name="DPR_SUFFIX"/>
+					<Key name="DPR_CHARSET">ISO-8859-1</Key>
+					<Key name="DPR_LAUNCH_BROWSER">true</Key>
+					<Key name="DPR_DATA_INTENT">false</Key>
+					<Key name="DPR_PREFIX"/>
+					<Key name="DPR_WEDGE_KEY_CHARS">9,10</Key>
+					<Key name="DPR_SCAN_TO_INTENT">true</Key>
+				</Section>
+			</Section>
+		</Section>
+	</Section>
+	<Key name="DPR_EDIT_DATA_PLUGIN">hsm.demo.totalfreedom/.DataEdit</Key>
+</ConfigDoc>
