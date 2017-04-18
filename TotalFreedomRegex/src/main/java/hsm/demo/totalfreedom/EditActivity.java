@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import static android.R.id.list;
 import static android.R.id.switchInputMethod;
+import static hsm.demo.totalfreedom.AimId.AimIds;
 
 public class EditActivity extends AppCompatActivity
         //implements View.OnClickListener
@@ -49,23 +50,7 @@ public class EditActivity extends AppCompatActivity
 
         txtAimID=(EditText) findViewById(R.id.editText_AimID);
         aimIdList=(Spinner)findViewById(R.id.aimIDlist);
-        //fill list
-        ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimId.AimIds);
-        dataAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
-        aimIdList.setAdapter(dataAdapter);
-        //already sets
-        aimIdList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AimId a=AimId.AimIds[position];
-                txtAimID.setText(a.aimid);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         //set AimID to rule's AimID
         txtAimID.setText(theRule.aimID);
 //        txtAimID.setOnClickListener(this);
@@ -76,6 +61,38 @@ public class EditActivity extends AppCompatActivity
                     currentEditText=txtAimID;
             }
         });
+
+        //fill list
+        ArrayAdapter<AimId> dataAdapter = new ArrayAdapter<AimId>(this, android.R.layout.simple_spinner_item, AimIds);
+        dataAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
+        aimIdList.setAdapter(dataAdapter);
+        //already sets
+        aimIdList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AimId a= AimIds[position];
+                txtAimID.setText(a.aimid);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //sroll to AimID in list if set
+        String sAimID=txtAimID.getText().toString();
+        if(sAimID.length()>0) {
+            int iPos=-1;
+            for (int x=0; x < AimIds.length; x++) {
+                if(sAimID.equals(AimIds[x].aimid)) {
+                    iPos=x;
+                    break;
+                }
+            }
+            if(iPos!=-1)
+                aimIdList.setSelection(iPos);
+        }
 
         txtRegex=(EditText)findViewById(R.id.editText_SearchFor);
         txtRegex.setText(DataEditUtils.getJavaEscaped(theRule.regex));
