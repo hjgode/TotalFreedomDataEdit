@@ -193,9 +193,9 @@ If the regex should look for a single digit, the string '\d' is OK for the Java 
 	Regex	Meaning				Java string
 	\d		single digit		\\d
 	\D		non-digit			\\D
-	\s		white space			\\s
+	\s		white space			\\s           [ \t\n\x0B\f\r]
 	\S		non-white space		\\S
-	\w		word char			\\w
+	\w		word char			\\w           [a-zA-Z_0-9]
 	\W		non-word char		\\W
 	\b		word boundary		\\b
 
@@ -209,8 +209,8 @@ Regex is regular expressions and a way to define a pattern for a search and repl
     a.c			matches an 'a' followed by any symbol 
            		followed by a literal 'c'
 	.*			matches anything (even nothing), the asterisk is a quantifier
-				(match as much, can be nothing)
-	.+			matches anything (at least one), the plus is a quantifier 
+				(match as much, can be nothing), does not match control chars except for white space chars
+	.+			matches anything (at least one), the plus is a quantifier, does not match 				control chars except for white space chars 
 				(match as much, but at least one time)
 	*           match no or many times
 	+           match one or many times
@@ -445,6 +445,10 @@ or you will get (possibly) unexpected results. With all ex1 rules enabled you wi
 ## Note
 
 The ; is not part of the rule. ;\r\n is used to split the rules file into rules.
+
+## Note 2
+
+Posix-Regex (US ASCII only) is not supported. For example "\p{Cntrl}" and other regex starting with \p.
 
 # Testing
 
