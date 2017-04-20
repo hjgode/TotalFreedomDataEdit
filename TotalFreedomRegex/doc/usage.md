@@ -1,4 +1,6 @@
-# Totalfreedom data editing demo plugin with Regex support
+#Totalfreedom data editing demo plugin with Regex support
+
+>version 0.03
 
 When you use barcode scanning and want to change the form of the scanned barcode data before it is wedged into an application you need a Data Editing Plugin.
 A Data Editing Plugin is a custom software that receives the scanned Barcode data and can return changed data.
@@ -286,6 +288,33 @@ Regex is regular expressions and a way to define a pattern for a search and repl
 	(?s)		single line mode
 	(?m)		multiline mode
 
+# Options/Flags
+
+Java Regex offers some options or flags. For example to make the . to match also Line Breaks, the flag (?.) can be used at the beginning of the Regex Search pattern. If you need to read barcode data with Line Breaks, use the DOTALL flag (?s). The demo plugin does not use any Pattern.Flags by default.
+
+## Example
+
+Barcode data is
+    Dexter\nGordon (two words with a line break in between)
+and you need to match that in all, then using (.*) will not match but (?s)(.*) will match.
+
+	rule	(.*)=>$1\n;		no output
+            (?s)(.*)\n;		Dexter\nGordon\n
+
+## Supported Flags
+
+    Flag    Pattern             Comment
+    (?.)    DOTALL              matches printabale and control chars (new line, 0x1e and others)
+    (?i)	CASE_INSENSITIVE    ignore case for non-unicode encoding
+    (?m)    MULTILINE           normally ^ and $ match the Start and End of the input (anchor), 
+                                in multiline mode the ^ matches after a line break or at the beginning 
+                                and $ matches before the line break or the end of the input.
+    (?u)    UNICODE_CASE        ignore case of unicode characters if CASE_INSENSITIVE is used.
+                                CASE_INSENSITIVE will only ignore case of US-ASCII characters
+    (?d)	UNIX_LINES          only Unix style line terminators '\n' are matched for ., ^ and $.
+    (?x)    COMMENTS            Permits white space and comments in a pattern. White space is ignored
+                                and embedded comments starting with a # are ignored until end of line.
+
 # Examples
 
 The following is a list of examples with barcodes, rules and the resulting wedged data.
@@ -449,6 +478,10 @@ The ; is not part of the rule. ;\r\n is used to split the rules file into rules.
 ## Note 2
 
 Posix-Regex (US ASCII only) is not supported. For example "\p{Cntrl}" and other regex starting with \p.
+
+## Multiline barcode data matching
+
+See the DOTALL flag (?.).
 
 # Testing
 
