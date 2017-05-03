@@ -29,7 +29,7 @@ public class DataEdit extends BroadcastReceiver {
     private final Handler handler = new Handler();
 //    Intent myIntent;
 //    Context myContext;
-    StringBuilder logText = new StringBuilder();  //text to sedn to main activity
+    StringBuilder logText = new StringBuilder();  //text to send to main activity
 
     void doLog(String s, Context context){
         Log.d(TAG, s);
@@ -131,6 +131,11 @@ public class DataEdit extends BroadcastReceiver {
 //                "]A0=>(.*)=>$1\n",
 //                "+g=>\u001D=>FNC1",  //will not stop rule matching as aimID field starts with a '+', will a global search/replace
                 "(.*)=>no match: $1\n"
+        };
+
+        //a simple standard rule to match all
+        sRules = new String[]{
+                "(?.)(.*)=>$1\n" //set DOTALL flag and then match everything
         };
         //read rules from file
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");

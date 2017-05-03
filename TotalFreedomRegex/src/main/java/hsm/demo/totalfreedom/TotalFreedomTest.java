@@ -50,22 +50,21 @@ public class TotalFreedomTest extends AppCompatActivity {
 
         setContentView(R.layout.activity_total_freedom_test);
         textView=(TextView)findViewById(R.id.textView2);
+        textView.setHorizontallyScrolling(true);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
         editText1=(EditText)findViewById(R.id.editText1);
         editText1.addTextChangedListener(new TextWatcher() {
-
             public void afterTextChanged(Editable s) {
                 // you can call or do what you want with your EditText here
                 Intent _intent=new Intent(BROADCAST_ACTION);
                 _intent.putExtra("text", getHexedString(s.toString()));
                 getAppContext().sendBroadcast(_intent);
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
+
         Button btnShowList=(Button)findViewById(R.id.btnRulesList);
         btnShowList.setOnClickListener(new View.OnClickListener() {
             @Override

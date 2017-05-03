@@ -1,4 +1,4 @@
-#Totalfreedom data editing demo plugin with Regex support
+# Totalfreedom data editing demo plugin with Regex support
 
 >version 0.03
 
