@@ -49,6 +49,10 @@ public class TotalFreedomTest extends AppCompatActivity {
         TotalFreedomTest.context = getApplicationContext();
 
         setContentView(R.layout.activity_total_freedom_test);
+
+        //Version number
+        ((TextView)findViewById(R.id.textViewVersion)).setText("v0.04");
+
         textView=(TextView)findViewById(R.id.textView2);
         textView.setHorizontallyScrolling(true);
         textView.setMovementMethod(new ScrollingMovementMethod());

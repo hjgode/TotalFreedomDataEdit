@@ -1,6 +1,6 @@
 # Totalfreedom data editing demo plugin with Regex support
 
->version 0.03
+>version 0.04
 
 When you use barcode scanning and want to change the form of the scanned barcode data before it is wedged into an application you need a Data Editing Plugin.
 A Data Editing Plugin is a custom software that receives the scanned Barcode data and can return changed data.
@@ -13,9 +13,31 @@ A simple example is the following rule line:
 
     (.*)=>$1\n;
 
-This will replace the scanned data by the data followed by a New Line character.
+This will replace the scanned data by the data followed by a New Line character. 
 
-For example: to replace all FNC1 sysmbols inside a scanned barcode by the string <FNC1> use the following line:
+For input data that contains new line or other control characters, the (.*)
+With the DOTALL flag set (see "(?s)") and the "(.*)" matching all and nothing.
+Better use:
+    
+    (?s)(.+)=>$1\n;
+    
+This will match everything, including new lines and control characters but will not result in an empty group being matched too. For example:
+    
+    (.*)=>My data: $1\n;
+
+used on "10110" data input will give the strange result:
+
+    My data: 10110\nMy data: 
+    
+as the (.*) matches also the empty group at the end of the data. Better use:
+ 
+    (.+)=>My data: $1\n;
+
+which will give the 'correct' result:
+
+    My data: 10110\n
+
+Another simple example: to replace all FNC1 sysmbols inside a scanned barcode by the string <FNC1> use the following line:
 
     +=>\u001d=><fnc1>;
 

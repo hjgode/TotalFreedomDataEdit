@@ -10,9 +10,15 @@ import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UnknownFormatConversionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,8 +106,26 @@ public class DataEdit extends BroadcastReceiver {
 
         String input=ScanResult;
         String aimID=intent.getStringExtra("aimId");
+        String timeStamp=intent.getStringExtra("timestamp");
+        String charSet=intent.getStringExtra("charset");
+        String myTimeStamp="---";
+        Date myDate=new Date();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            myDate = sdf.parse(timeStamp);
+            Log.d(TAG, "Date: "+myDate.toString());
+            sdf.applyPattern("yyyy-MM-dd hh:mm");
+            myTimeStamp=(sdf.format(myDate));
+        }catch (RuntimeException ex){
+            Log.e(TAG, "SimpleDateFormat: "+ex.toString());
+        }
+        catch (ParseException ex) {
+            Log.e(TAG, "SimpleDateFormat: "+ex.toString());
+        }
+
         doUpdate(String.format("ScanData IN: '%s'", DataEditUtils.getHexedString(input)),context);
         doUpdate(String.format("aimId='%s'",aimID),context);
+        doUpdate(String.format("date='%s'",myTimeStamp),context);
 
         // read rules
         // a rule consist of two or three sections
@@ -135,7 +159,7 @@ public class DataEdit extends BroadcastReceiver {
 
         //a simple standard rule to match all
         sRules = new String[]{
-                "(?.)(.*)=>$1\n" //set DOTALL flag and then match everything
+                "(?s)(.+)=>$1\n" //set DOTALL (single line) flag and then match everything
         };
         //read rules from file
         ReadIniFile readIniFile=new ReadIniFile(context, "dataedit_regex.ini");
@@ -199,6 +223,7 @@ public class DataEdit extends BroadcastReceiver {
                     if(MyRegex.doRegex(ScanResult, r.regex, r.replace, buffer, r.global)) {
                         bMatchedFound=true;
                         formattedOutput=buffer.toString();
+                        Log.i(TAG, "noAimID-formattedOutput: " + formattedOutput);
                         doLog(String.format("Matched rule: %s", r.toString()), context);
                         if(r.stop)
                             break;
@@ -217,8 +242,26 @@ public class DataEdit extends BroadcastReceiver {
             }
         } //for loop end
 
-        if(bMatchedFound)
-            doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)),context);
+        if(bMatchedFound) {
+            doLog(String.format("DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)), context);
+            //insert date and/or time?
+
+            DateFormat t = new SimpleDateFormat("HH:mm");
+            DateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+            String theTime = t.format(myDate);
+            String theDate = d.format(myDate);
+
+            Log.i(TAG, "#### DATE TIME replacement ####");
+            Log.i(TAG, "formattedOutput: " + formattedOutput);
+            String newStr=formattedOutput.replaceAll("!TIME!", theTime);
+            Log.i(TAG, "newStr: " + newStr);
+            String newStr2=newStr.replaceAll("!DATE!", theDate);
+            Log.i(TAG, "newStr2: " + newStr2);
+            formattedOutput=newStr2;
+            Log.i(TAG, "formattedOutput: " + formattedOutput);
+            doLog("formattedOutput: " + formattedOutput, context);
+            Log.i(TAG, "---- DATE TIME replacement ----");
+        }
         else {
             DataEditUtils.doBeepWarn();
             doLog(String.format("NO DataEdit replacement: %s=>%s", DataEditUtils.getJavaEscaped(ScanResult), DataEditUtils.getJavaEscaped(formattedOutput)), context);

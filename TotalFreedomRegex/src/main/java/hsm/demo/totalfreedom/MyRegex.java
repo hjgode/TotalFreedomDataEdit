@@ -138,23 +138,25 @@ public class MyRegex {
         myRegex=searchpattern;
 
         boolean faulty=false;
-        Pattern p=null;
+        Pattern pattern=null;
         //check the regex syntax, does it compile?
         try {
-            p = Pattern.compile(myRegex);
+            pattern = Pattern.compile(myRegex);
         }catch(UnknownFormatConversionException e){
             faulty=true;
             Log.e(TAG, "Pattern.Compile() exception: "+e.getMessage());
+            doLog("Pattern.Compile() exception: "+e.getMessage());
         }
         catch (Exception e){
             faulty=true;
             Log.e(TAG, "Pattern.Compile() exception: "+e.getMessage());
+            doLog("Pattern.Compile() exception: "+e.getMessage());
         }
 
-        Matcher m=null;
-        if(!faulty && p!=null) {
+        Matcher matcher=null;
+        if(!faulty && pattern!=null) {
             try {
-                m = p.matcher(input);
+                matcher = pattern.matcher(input);
             }catch (Exception e){
                 faulty=true;
                 Log.e(TAG, "Pattern.matcher() exception: "+e.getMessage());
@@ -170,10 +172,10 @@ public class MyRegex {
         if(myDebug){
             int iCnt = 0;
             try{
-                while(m.find()){
-                    while(iCnt<=m.groupCount()) {
-                        if(m.group(iCnt)!=null) {
-                            Log.d(TAG, String.format("Match %i: %s", iCnt, m.group(iCnt)));
+                while(matcher.find()){
+                    while(iCnt<=matcher.groupCount()) {
+                        if(matcher.group(iCnt)!=null) {
+                            Log.d(TAG, String.format("Match %i: %s", iCnt, matcher.group(iCnt)));
                         }
                         iCnt++;
                     }
@@ -182,24 +184,39 @@ public class MyRegex {
                 Log.e(TAG, "m.find() exception: "+e.getMessage());
             }
         }
-        String replacementText = "($1) $2-$3\n"; // \\\\x0d will give output \x0d; \\x0d will output x0d NEED to use JAVA escape codes, ie '\n' for a new line
-        replacementText= replacematch;
+        String replacementText = replacematch;// "($1) $2-$3\n"; // \\\\x0d will give output \x0d; \\x0d will output x0d NEED to use JAVA escape codes, ie '\n' for a new line
         String returnString="";
 
 //        if(global && !Pattern.matches(searchpattern, input)) {
 //            Log.d(TAG, "Pattern does not match!");
 //            return false;
 //        }
+/*
+sIN = "10110\n"
+searchpattern = "(?s)(.*)"
+replacematch = "!DATE!!TIME! $1"
+global = false
+input = "10110\n"
+bRet = false
+sOut = {StringBuilder@4457} ""
+myRegex = "(?s)(.*)"
+faulty = false
+p = {Pattern@4458} "(?s)(.*)"
+m = {Matcher@4459} "java.util.regex.Matcher[pattern=(?s)(.*) region=0,6 lastmatch=]"
+replacementText = "!DATE!!TIME! $1"
+returnString = ""
+TAG = "MyRegex::doRegex"
+ */
         try {
-            if(m.matches() || global){ //redundant with Patter.matches above
-                Log.d(TAG, String.format("m.matches()=%s, global=%s", m.matches(), global));
+            if(matcher.matches() || global){ //redundant with Patter.matches above
+                Log.d(TAG, String.format("m.matches()=%s, global=%s", matcher.matches(), global));
                 if(global){
-                    if(m.find()){
-                        returnString = m.replaceAll((replacementText));
+                    if(matcher.find()){
+                        returnString = matcher.replaceAll(replacementText);
                         sOut.delete(0,sOut.length());
                         sOut.append(returnString);
                         bRet=true;
-                        Log.d(TAG, String.format("#### returnString= %s", returnString));
+                        Log.d(TAG, String.format("#### global sOut= %s", sOut));
                     }else{
                         //no global match found
                         sOut.delete(0, sOut.length());
@@ -209,11 +226,11 @@ public class MyRegex {
                     }
                 }
                 else {
-                    returnString = m.replaceAll(replacementText);
+                    returnString = matcher.replaceAll(replacementText);
                     sOut.delete(0, sOut.length());
                     sOut.append(returnString);
                     bRet = true;
-                    Log.d(TAG, String.format("#### returnString= %s", returnString));
+                    Log.d(TAG, String.format("#### non-global sOut= %s", sOut.toString()));
                 }//is global
             }
             else {
