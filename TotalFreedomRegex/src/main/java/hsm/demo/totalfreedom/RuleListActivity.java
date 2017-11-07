@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
     final String TAG="ListActivity";
     private static int pos=-1;
     final int UPDATE_RULE_REQUEST = 1;
+    final int ADD_RULE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,15 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rule theRule=new rule("(.*)=>$1");
-                rules.add(theRule);
-                ruleAdapter.updateAdapter(rules);
-                int newpos=ruleAdapter.getCount()-1;
-                Intent i = new Intent(getApplicationContext(), EditActivity.class);
-                i.putExtra("theRule", rules.get(newpos));
-                i.putExtra("position", newpos);
-                startActivityForResult(i, UPDATE_RULE_REQUEST);
+                addRule();
+//                rule theRule=new rule("(.*)=>$1");
+//                rules.add(theRule);
+//                ruleAdapter.updateAdapter(rules);
+//                int newpos=ruleAdapter.getCount()-1;
+//                Intent i = new Intent(getApplicationContext(), EditActivity.class);
+//                i.putExtra("theRule", rules.get(newpos));
+//                i.putExtra("position", newpos);
+//                startActivityForResult(i, UPDATE_RULE_REQUEST);
             }
         });
 
@@ -96,6 +99,39 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
 //            }
 //        });
     }//onCreate
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu_rules_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menuitem_rule_add:
+                addRule();
+                return true;
+            case R.id.menuitem_rules_save:
+                saveChanges(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    void addRule(){
+        rule theRule=new rule("(?s)(.*)=>$1");
+        rules.add(theRule);
+        ruleAdapter.updateAdapter(rules);
+        int newpos=ruleAdapter.getCount()-1;
+        Intent i = new Intent(getApplicationContext(), EditActivity.class);
+        i.putExtra("theRule", rules.get(newpos));
+        i.putExtra("position", newpos);
+        startActivityForResult(i, ADD_RULE_REQUEST);
+    }
 
     void saveChanges(Context c){
         //
@@ -199,11 +235,25 @@ public class RuleListActivity extends AppCompatActivity implements PopupMenu.OnM
             if (resultCode == RESULT_OK) {
                 rule r = (rule)data.getSerializableExtra("theRule");
                 int p = data.getIntExtra("position", -1);
-                Log.d(TAG, "onActivityResult: "+r.toString()+" pos="+p);
+                Log.d(TAG, "onActivityResult-OK: "+r.toString()+" pos="+p);
 
                 //update the list
                 rules.set(p,r);
                 ruleAdapter.updateAdapter(rules);
+            }
+        }
+        else if(requestCode==ADD_RULE_REQUEST){
+            if(resultCode==RESULT_CANCELED){
+                //remove added rule
+                int p = data.getIntExtra("position", -1);
+                Log.d(TAG, "onActivityResult-CANCEL: "+" pos="+p);
+                rules.remove(p);
+                //Toast.makeText(getApplicationContext(), getResources().getString(R.string.txtMessageYesDeleted), Toast.LENGTH_LONG);
+                ruleAdapter.updateAdapter(rules);
+            }
+            else if(resultCode==RESULT_OK){
+                //user changed an existing rule
+                //handled via UPDATE_RULE_REQUEST
             }
         }
     }}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_rules_list">Rules List ...</string>
+    <string name="menuitem_add_rule">Add Rule ...</string>
+    <string name="edit_cancel">Cancel Edit</string>
+    <string name="edit_save">Save</string>
+</resources>

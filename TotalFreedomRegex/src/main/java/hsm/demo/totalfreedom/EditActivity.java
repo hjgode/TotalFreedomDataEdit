@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -118,6 +122,39 @@ public class EditActivity extends AppCompatActivity
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                theRule.global=((CheckBox)findViewById(R.id.checkBox_Global)).isChecked();
+//                theRule.stop=!((CheckBox)findViewById(R.id.checkBox_NoStop)).isChecked();
+//                theRule.aimID=((EditText)findViewById(R.id.editText_AimID)).getText().toString();
+//
+//                String regexStr=txtRegex.getText().toString();
+//                //internally we use unescaped JAVA
+//                theRule.regex=DataEditUtils.getJavaUnescaped (regexStr);
+//                //theRule.regex=regexStr;
+//
+//                String replaceStr=txtReplace.getText().toString();
+//                theRule.replace=DataEditUtils.getJavaUnescaped (replaceStr);
+//                //theRule.replace=replaceStr;
+//
+//                Intent resultIntent = new Intent();
+//                resultIntent.putExtra("theRule", theRule);
+//                resultIntent.putExtra("position", iPosition);
+//                setResult(Activity.RESULT_OK, resultIntent);
+//                finish();
+                saveEdit();
+            }
+        });
+
+        Button btnCancel=(Button)findViewById(R.id.button_Cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelEdit();
+            }
+        });
+
+    }//onCreate
+
+            void saveEdit(){
                 theRule.global=((CheckBox)findViewById(R.id.checkBox_Global)).isChecked();
                 theRule.stop=!((CheckBox)findViewById(R.id.checkBox_NoStop)).isChecked();
                 theRule.aimID=((EditText)findViewById(R.id.editText_AimID)).getText().toString();
@@ -136,20 +173,48 @@ public class EditActivity extends AppCompatActivity
                 resultIntent.putExtra("position", iPosition);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
-            }
-        });
 
-        Button btnCancel=(Button)findViewById(R.id.button_Cancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(Activity.RESULT_CANCELED, new Intent());
+            }
+            void cancelEdit(){
+//                setResult(Activity.RESULT_CANCELED, new Intent());
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("position", iPosition);
+                setResult(Activity.RESULT_CANCELED, resultIntent);
                 finish();
             }
-        });
+            @Override
+            public boolean onCreateOptionsMenu(Menu menu) {
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.mainmenu_rule_editing, menu);
+                return true;
+            }
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                // Handle item selection
+                switch (item.getItemId()) {
+                    case R.id.menuitem_edit_cancel:
+                        cancelEdit();
+                        return true;
+                    case R.id.menuitem_edit_save:
+                        saveEdit();
+                        return true;
+                    case R.id.menuitem_editrule_help:
+                        showHelp();
+                        return true;
+                    default:
+                        return super.onOptionsItemSelected(item);
+                }
+            }
+            void showHelp(){
+                HelpDialog helpDialog = new HelpDialog(this, "file:///android_asset/regex-editor.html");
+                helpDialog.setTitle("Usage");
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                int width = metrics.widthPixels;
+                int height = metrics.heightPixels;
 
-    }
-
+                helpDialog.show();
+                helpDialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+            }
 
 //    public void onClick(View v){
 //        switch(v.getId()){

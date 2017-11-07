@@ -1,0 +1,371 @@
+<html><head><style>body {
+   color: black;
+}
+</style></head><body><h1 id="totalfreedom-data-editing-demo-plugin-with-regex-support">Totalfreedom data editing demo plugin with Regex support</h1>
+<blockquote>
+	<p>version 0.04</p>
+</blockquote>
+<p>When you use barcode scanning and want to change the form of the scanned barcode data before it is wedged into an application you need a Data Editing Plugin.
+	A Data Editing Plugin is a custom software that receives the scanned Barcode data and can return changed data.</p>
+<p>Instead of writing different Data Editing Plugins using Android coding technologies, the provided Demo Data Edit Plugin provides a single way to use the same plugin to perform custom data changes. The custom data changes are driven by Java Regex, regular expressions to match and change data.</p>
+<p>All incoming barcode data is compared to a pattern inside a list of rules. If the scanned data matches the pattern of a rule, the replacement part is used to change the data. The pattern and replacement string are evaluated using Java Regex and become very powerful.</p>
+<p>A simple example is the following rule line:</p>
+<pre><code>(.*)=&gt;$1\n<span class="hljs-comment">;</span>
+</code></pre><p>This will replace the scanned data by the data followed by a New Line character. </p>
+<p>For input data that contains new line or other control characters, the (.<em>)
+	With the DOTALL flag set (see &quot;(?s)&quot;) and the &quot;(.</em>)&quot; matching all and nothing.
+	Better use:</p>
+<pre><code>(<span class="hljs-string">?s</span>)(.+)=&gt;$1\n;
+</code></pre><p>This will match everything, including new lines and control characters but will not result in an empty group being matched too. For example:</p>
+<pre><code>(.*)=&gt;<span class="hljs-type">My</span> <span class="hljs-class"><span class="hljs-keyword">data</span>: $1\n;</span>
+</code></pre><p>used on &quot;10110&quot; data input will give the strange result:</p>
+<pre><code><span class="hljs-type">My</span> <span class="hljs-class"><span class="hljs-keyword">data</span>: 10110\nMy <span class="hljs-keyword">data</span>: </span>
+</code></pre><p>as the (.*) matches also the empty group at the end of the data. Better use:</p>
+<pre><code>(.+)=&gt;<span class="hljs-type">My</span> <span class="hljs-class"><span class="hljs-keyword">data</span>: $1\n;</span>
+</code></pre><p>which will give the &#39;correct&#39; result:</p>
+<pre><code><span class="hljs-type">My</span> <span class="hljs-class"><span class="hljs-keyword">data</span>: 10110\n</span>
+</code></pre><p>Another simple example: to replace all FNC1 sysmbols inside a scanned barcode by the string <FNC1> use the following line:</p>
+<pre><code>+=&gt;\u001d=&gt;&lt;fnc1&gt;;
+</code></pre><h2 id="note">Note</h2>
+<p>If no rule matches, nothing is returned and a &#39;bad scan&#39; sound is emitted.</p>
+<h2 id="installation">Installation</h2>
+<p>Install the Demo Data Editing plugin apk either using ADB or by copying the apk file to the device and then use a file browser to install.</p>
+<h3 id="setup">Setup</h3>
+<p>Go to Settings-Scanning-Internal Scanner-Default Profile-Data Processing Settings-Data Editing Plugin and enter the name of the Totalfreedom Demo DataEdit class:</p>
+<pre><code>hsm<span class="hljs-selector-class">.demo</span><span class="hljs-selector-class">.totalfreedom</span>/.DataEdit
+</code></pre><p><img src="./DataProcessingSettings_01.png" alt="Settings 1"></p>
+<p><img src="./DataProcessingSettings_02.png" alt="Settings 2"></p>
+<h3 id="android-permissions">Android Permissions</h3>
+<p>As the Plugin uses a shared directory to read the rules file, it needs android.permission.READ_EXTERNAL_STORAGE and android.permission.WRITE_EXTERNAL_STORAGE. Without these permissions the application code does not work. The write permissions is used to write a default, standard rules file as a starter.</p>
+<p><img src=".//AppPermissions_01.png" alt="Android Permissions for TotalFreedomTest"></p>
+<h3 id="usage-totalfreedomtest">Usage - TotalFreedomTest</h3>
+<p>After the apk is installed there is also a Test application available called &quot;TotalFreedomTest&quot;. The plugin itself does not need an application to run. The test application has an input field, that can be used to show the wedged data and a information area, that shows internals of the plugin work.</p>
+<p><img src=".//TotalFreedomTest_01.png" alt="TotalFreedomTest_01"></p>
+<p><img src=".//TotalFreedomTest_02.png" alt="TotalFreedomTest_02"></p>
+<h1 id="configuration">Configuration</h1>
+<p>The Demo Totalfreedom plugin is configured by a text rules file.</p>
+<h2 id="rules-editor">Rules Editor</h2>
+<p>There is also the possibilty to edit rules with the built-in <a href="https://github.com/hjgode/TotalFreedomDataEdit/blob/master/TotalFreedomRegex/doc/regex-editor.md">Rules Editor</a></p>
+<h2 id="the-rules-file">The rules file</h2>
+<p>The demo plugin tool uses the file</p>
+<pre><code>&lt;Device&gt;<span class="hljs-symbol">\I</span>nternal storage<span class="hljs-symbol">\D</span>ocuments<span class="hljs-symbol">\d</span>ataedit_regex.ini
+</code></pre><ul>
+	<li>NOTE: The directory &quot;Documents&quot; might not exist on your device. If so, you have to manually create the directory.</li>
+</ul>
+<p>The rule file can be copied from and to your PC:</p>
+<p><img src=".//storage_documents.png" alt="TotalFreedomTest_02"></p>
+<p>The list of rules is read on every scanned barcode. Any change will be applied on next barcode scan.</p>
+<p>A sample file content will be:</p>
+<pre><code><span class="hljs-comment"># this is a comment;</span>
+<span class="hljs-built_in">test</span>(.)(.)(.*)=&gt;(<span class="hljs-variable">$1</span>) <span class="hljs-variable">$2</span>-<span class="hljs-variable">$3</span>\n;
+]A0=&gt;(.*)=&gt;<span class="hljs-variable">$1</span>\n;
++g=&gt;\u001D=&gt;FNC1;
+(.*)=&gt;<span class="hljs-variable">$1</span>\n;
+</code></pre><h3 id="comment-line">Comment line</h3>
+<p>A rule line starting with a # will be treated as comment and will not be further processed.</p>
+<pre><code># <span class="hljs-keyword">this</span> <span class="hljs-keyword">is</span> a comment;
+</code></pre><h3 id="a-rule-line">A rule line</h3>
+<p>Every rule line can have either two or three sections or fields:</p>
+<pre><code>regex=&gt;replacement
+
+<span class="hljs-keyword">Options</span>/AimID=&gt;regex=&gt;replacement
+</code></pre><p>Fields have to be separated by </p>
+<pre><code>=&gt;
+</code></pre><p>and the rule lines in a file have to end with:</p>
+<pre><code>;<span class="hljs-symbol">\r</span><span class="hljs-symbol">\n</span>
+</code></pre><p>(A semicolon followed by carriage return / line feed.)</p>
+<h4 id="two-field-rules">Two-field rules</h4>
+<p>The first field defines the pattern that a barcode data must match for the rule being executed. The second field is the replacement to be used if the pattern matches the barcode data.</p>
+<pre><code>regex <span class="hljs-built_in">pattern</span>=&gt;replacement;
+</code></pre><h4 id="three-field-rules">Three-field rules</h4>
+<p>The first field may contain the option &#39;+&#39; and or &#39;g&#39; and may be followed by the Symbology AimID that must match the AimID of the scanned barcode.</p>
+<pre><code>[<span class="hljs-string">+</span>][<span class="hljs-symbol">g</span>][<span class="hljs-string">AimID</span>]=&gt;pattern=&gt;replacement;
+</code></pre><h5 id="the-option">The &#39;+&#39; option</h5>
+<p>Rules are processed line by line from top to bottom. If a rule matches, the processing of further rule lines will not take place. If the &#39;+&#39; option is used, the rule processing will not stop after a rule line is matched.</p>
+<h5 id="the-g-option">The &#39;g&#39; option</h5>
+<p>The demo plugin can match a pattern on the whole data or do a simple search-and-replace. If the &#39;g&#39; option is used, the pattern and replacement field are used for a global search&amp;replace.</p>
+<ul>
+	<li>The &#39;g&#39; option implies also as the &#39;no-stop&#39; handling. A following rule will be processed.</li>
+</ul>
+<h5 id="the-aimid">The AimID</h5>
+<p>The standard AimID can be used to let the demo plugin match only against barcode that has the same AimID.</p>
+<p>For example:</p>
+<pre><code>]A0=&gt;(.*)=&gt;Aim Id matches <span class="hljs-keyword">for</span>: $<span class="hljs-number">1</span>;
+</code></pre><p>will output the data with the prefix &quot;Aim Id matches: &quot; only for barcode with AimID &quot;]A0&quot;.</p>
+<h5 id="the-regex">The regex</h5>
+<p>The regex field defines the pattern to be searched for in the input data.</p>
+<h5 id="the-replacement">The replacement</h5>
+<p>The replacement defines the output for scanned data if the regex pattern matches.</p>
+<h1 id="to-escape-or-not-escape-characters-">To escape or not escape characters?</h1>
+<p>For Java strings itself and Java Regex the escape symbol &#39;\&#39; has a special meaning. Java escape sequences need to be used to describe a non-printable character or code.</p>
+<h2 id="java-escape-sequences">Java Escape sequences</h2>
+<p>Codes that need to be replaced by a Java escape sequence. The rule file has to follow the syntax for java strings.</p>
+<pre><code>| <span class="hljs-type">Escape</span> Sequence | <span class="hljs-type">Description</span>                                                 |
+<span class="hljs-type">| --------------- | ----------------------------------------------------------- |
+| \t</span>              | <span class="hljs-type">Inserts</span> a tab <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.                     |
+<span class="hljs-type">| \b</span>               | <span class="hljs-type">Inserts</span> a backspace <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.                 |
+<span class="hljs-type">| \n</span>               | <span class="hljs-type">Inserts</span> a newline <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.                 |
+<span class="hljs-type">| \r</span>                | <span class="hljs-type">Inserts</span> a carriage <span class="hljs-keyword">return</span> <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.         |
+<span class="hljs-type">| \f</span>               | <span class="hljs-type">Inserts</span> a form feed <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.                 |
+<span class="hljs-type">| \'               | Inserts</span> a single <span class="hljs-built_in">quote</span> character <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point. |
+<span class="hljs-type">| \"               | Inserts</span> a <span class="hljs-built_in">double</span> <span class="hljs-built_in">quote</span> character <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point. |
+<span class="hljs-type">| \\               | Inserts</span> a backslash character <span class="hljs-built_in">in</span> the text <span class="hljs-built_in">at</span> this point.     |<span class="hljs-type"></span>
+</code></pre><h2 id="java-regex-escape-sequences">Java Regex escape sequences</h2>
+<p>To let Java not look at these as Java escape sequences, the escape symbol has to be doubled. Otherwise Java sees the single backslash and looks for a known escape character, for example a t, r or n. If that does not follow, the Java string gets corrupted.</p>
+<p>Not all of the following escape sequences have to be used all the time. The &#39;-&#39;, for example, has only a special meaning inside a set like [a-z]. To look for a, b, c, or -, for example, you can use [abc-].</p>
+<pre><code>|<span class="hljs-string"> char </span>|<span class="hljs-string"> Regex Meaning                      </span>|<span class="hljs-string"> escaped regex </span>|<span class="hljs-string"> escaped Java  </span>|
+|<span class="hljs-string">------</span>|<span class="hljs-string">------------------------------------</span>|<span class="hljs-string">---------------</span>|<span class="hljs-string">---------------</span>|
+|<span class="hljs-string">  \   </span>|<span class="hljs-string"> to look for a single backslash     </span>|<span class="hljs-string"> \\            </span>|<span class="hljs-string"> \\\\          </span>|
+|<span class="hljs-string">  .   </span>|<span class="hljs-string"> to look for a period               </span>|<span class="hljs-string"> \.            </span>|<span class="hljs-string"> \\.           </span>|
+|<span class="hljs-string">  [   </span>|<span class="hljs-string"> start char class of [a-z]          </span>|<span class="hljs-string"> \[            </span>|<span class="hljs-string"> \\[           </span>|
+|<span class="hljs-string">  ]   </span>|<span class="hljs-string"> end char class of [a-z]            </span>|<span class="hljs-string"> \]            </span>|<span class="hljs-string"> \\]           </span>|
+|<span class="hljs-string">  {   </span>|<span class="hljs-string"> start quantifier of {N}            </span>|<span class="hljs-string"> \{            </span>|<span class="hljs-string"> \\{           </span>|
+|<span class="hljs-string">  }   </span>|<span class="hljs-string"> end quantifier of {N}              </span>|<span class="hljs-string"> \}            </span>|<span class="hljs-string"> \\{           </span>|
+|<span class="hljs-string">  (   </span>|<span class="hljs-string"> start group separator              </span>|<span class="hljs-string"> \(            </span>|<span class="hljs-string"> \\(           </span>|
+|<span class="hljs-string">  )   </span>|<span class="hljs-string"> end group separator                </span>|<span class="hljs-string"> \)            </span>|<span class="hljs-string"> \\)           </span>|
+|<span class="hljs-string">  *   </span>|<span class="hljs-string"> quantifier, zero or many           </span>|<span class="hljs-string"> \*            </span>|<span class="hljs-string"> \\*           </span>|
+|<span class="hljs-string">  +   </span>|<span class="hljs-string"> quantifier, one or many            </span>|<span class="hljs-string"> \+            </span>|<span class="hljs-string"> \\+           </span>|
+|<span class="hljs-string">  -   </span>|<span class="hljs-string"> set separator in [a-z]             </span>|<span class="hljs-string"> \-            </span>|<span class="hljs-string"> \\-           </span>|
+|<span class="hljs-string">  ?   </span>|<span class="hljs-string"> quantifier or back reference       </span>|<span class="hljs-string"> \?            </span>|<span class="hljs-string"> \\?           </span>|
+|<span class="hljs-string">  ^   </span>|<span class="hljs-string"> anchor of begin of line            </span>|<span class="hljs-string"> \^            </span>|<span class="hljs-string"> \\^           </span>|
+|<span class="hljs-string">  $   </span>|<span class="hljs-string"> groupd reference in replace text   </span>|<span class="hljs-string"> \$            </span>|<span class="hljs-string"> \\$           </span>|
+|<span class="hljs-string">  </span>|<span class="hljs-string">   </span>|<span class="hljs-string"> 'or' operator                      </span>|<span class="hljs-string"> \</span>|<span class="hljs-string">            </span>|<span class="hljs-string"> \\</span>|<span class="hljs-string">           </span>|
+</code></pre><h3 id="more-examples">More examples</h3>
+<p>If the regex should look for a single digit, the string &#39;\d&#39; is OK for the Java Regex but not as Java string. So it has to be written as &#39;\d&#39; in the string to let the Regex get a &#39;\d&#39;.</p>
+<pre><code>Regex    Meaning                Java string
+<span class="hljs-symbol">\d</span>        single digit        <span class="hljs-symbol">\\</span>d
+<span class="hljs-symbol">\D</span>        non-digit            <span class="hljs-symbol">\\</span>D
+<span class="hljs-symbol">\s</span>        white space            <span class="hljs-symbol">\\</span>s           [ <span class="hljs-symbol">\t</span><span class="hljs-symbol">\n</span><span class="hljs-symbol">\x</span>0B<span class="hljs-symbol">\f</span><span class="hljs-symbol">\r</span>]
+<span class="hljs-symbol">\S</span>        non-white space        <span class="hljs-symbol">\\</span>S
+<span class="hljs-symbol">\w</span>        word char            <span class="hljs-symbol">\\</span>w           [a-zA-Z_0-9]
+<span class="hljs-symbol">\W</span>        non-word char        <span class="hljs-symbol">\\</span>W
+<span class="hljs-symbol">\b</span>        word boundary        <span class="hljs-symbol">\\</span>b
+</code></pre><h1 id="simple-regex">Simple Regex</h1>
+<p>Regex is regular expressions and a way to define a pattern for a search and replace. This demo plugin uses Java Regex.</p>
+<pre><code>.            matches a single symbol
+a            matches a single literal <span class="hljs-string">'a'</span>
+ab            matches the literal sequence <span class="hljs-string">'ab'</span>
+a.c            matches an <span class="hljs-string">'a'</span> followed <span class="hljs-keyword">by</span> any symbol
+               followed <span class="hljs-keyword">by</span> a literal <span class="hljs-string">'c'</span>
+.*            matches anything (even nothing), the asterisk <span class="hljs-keyword">is</span> a quantifier
+            (match as much, can be nothing), does <span class="hljs-keyword">not</span> match control chars except <span class="hljs-keyword">for</span> white space chars
+.+            matches anything (at least one), the plus <span class="hljs-keyword">is</span> a quantifier, does <span class="hljs-keyword">not</span> match                 control chars except <span class="hljs-keyword">for</span> white space chars
+            (match as much, but at least one time)
+*           match <span class="hljs-literal">no</span> <span class="hljs-keyword">or</span> many times
++           match one <span class="hljs-keyword">or</span> many times
+?            matches <span class="hljs-literal">no</span> <span class="hljs-keyword">or</span> one times, short <span class="hljs-keyword">for</span> {<span class="hljs-number">0</span>,<span class="hljs-number">1</span>}
+{X}            match X times
+            <span class="hljs-string">\d{3}</span> searches <span class="hljs-keyword">for</span> three digits,
+            .{<span class="hljs-number">10</span>} <span class="hljs-keyword">for</span> any character sequence <span class="hljs-keyword">of</span> length <span class="hljs-number">10.</span>
+{X,Y}        matches X <span class="hljs-keyword">to</span> Y times
+            <span class="hljs-string">\d{1,4}</span> means <span class="hljs-string">\d</span> must occur at least once <span class="hljs-keyword">and</span> at a maximum <span class="hljs-keyword">of</span> four.
+*?          finds the smallest match
+^abc        anchors the match <span class="hljs-keyword">to</span> beginning
+abc$        anchors the match <span class="hljs-keyword">to</span> the end
+<span class="hljs-string">\(</span>            Java: <span class="hljs-string">\\(</span>
+            matches a single opening bracket
+<span class="hljs-string">\)</span>            Java: <span class="hljs-string">\\)</span>
+            matches a single closing bracket
+<span class="hljs-string">\{</span>  <span class="hljs-string">\}</span>        Java: <span class="hljs-string">\\{</span>  <span class="hljs-string">\\}</span>
+<span class="hljs-string">\[</span>  <span class="hljs-string">\]</span>        Java: <span class="hljs-string">\\[</span>  <span class="hljs-string">\\]</span>
+            brackets must be escaped <span class="hljs-keyword">if</span> needed <span class="hljs-keyword">to</span> look <span class="hljs-keyword">for</span>
+.*<span class="hljs-string">\(0\).*</span>
+            will match a string <span class="hljs-keyword">with</span> <span class="hljs-string">"(0)"</span> inside
+(&lt;expr&gt;)    groups the matching expression <span class="hljs-keyword">for</span> later
+            reference <span class="hljs-keyword">with</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">to</span> $x, $<span class="hljs-number">0</span> references all groups
+            ie: <span class="hljs-string">"567"</span> <span class="hljs-keyword">with</span> regex=(<span class="hljs-string">\d)(\d)(\d)</span> <span class="hljs-keyword">and</span> replace=$<span class="hljs-number">3</span>$<span class="hljs-number">1</span>$<span class="hljs-number">2</span> will give
+            <span class="hljs-number">756</span>
+(a b)        will match the string <span class="hljs-string">'a b'</span> as a group reference
+<span class="hljs-string">\u001d</span>        matches the symbol <span class="hljs-keyword">with</span> the unicode
+            hex value <span class="hljs-number">001d</span>
+<span class="hljs-string">\t</span>            matches a horizontal tab
+<span class="hljs-string">\d</span>            matches a digit, <span class="hljs-keyword">for</span> Java Regex <span class="hljs-keyword">this</span> must be used as <span class="hljs-string">\\d</span>
+            same as [<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]
+<span class="hljs-string">\D</span>            matches a non-digit, <span class="hljs-keyword">for</span> Java Regex <span class="hljs-keyword">this</span> must be used as <span class="hljs-string">\\D</span>
+            same as [^<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]
+<span class="hljs-string">\s</span>            matches a white space, <span class="hljs-keyword">for</span> Java Regex <span class="hljs-keyword">this</span> must be used as <span class="hljs-string">\\s</span>
+            short <span class="hljs-keyword">for</span> [ <span class="hljs-string">\t\n\x0b\r\f]</span>
+<span class="hljs-string">\w</span>            Java: <span class="hljs-string">\\w</span>
+            a word char ([a-zA-Z_0-<span class="hljs-number">9</span>])
+<span class="hljs-string">\W</span>            Java: <span class="hljs-string">\\W</span>
+            any non-word symbol, [^<span class="hljs-string">\w]</span>
+<span class="hljs-string">\b</span>            Java: <span class="hljs-string">\\b</span>
+            a word boundary, where word <span class="hljs-keyword">is</span> [a-zA-Z_0-<span class="hljs-number">9</span>]
+&lt;expr&gt;?        makes expr optional
+    ^<span class="hljs-string">\d+(\.\d+)?</span> Java: <span class="hljs-string">"^\\d+(\\.\\d+)?"</span>
+            <span class="hljs-keyword">for</span> example matches <span class="hljs-string">"5"</span>, <span class="hljs-string">"1.5"</span>, <span class="hljs-string">"2.21"</span>
+            but <span class="hljs-keyword">not</span> <span class="hljs-string">".5"</span>
+            ^ defines <span class="hljs-literal">that</span> the patter must start at beginning <span class="hljs-keyword">of</span> a <span class="hljs-keyword">new</span> line.
+            <span class="hljs-string">\d+</span> matches one <span class="hljs-keyword">or</span> several digits. The ? makes the statement <span class="hljs-keyword">in</span>
+            brackets optional. <span class="hljs-string">\.</span> matches <span class="hljs-string">"."</span>, parentheses are used <span class="hljs-keyword">for</span>
+            grouping
+&lt;expr&gt;{n}
+            quantifier, defines a repetition <span class="hljs-keyword">for</span> the expression
+[abc]        set definition, matches a <span class="hljs-keyword">or</span> b <span class="hljs-keyword">or</span> c
+[abc][vz]    set definition, matches a <span class="hljs-keyword">or</span> b <span class="hljs-keyword">or</span> c followed <span class="hljs-keyword">by</span> v <span class="hljs-keyword">or</span> z
+[^abc]        negated set, matches anything except a <span class="hljs-keyword">or</span> b <span class="hljs-keyword">or</span> c
+[a-d1-<span class="hljs-number">7</span>]    ranges, matches a <span class="hljs-keyword">to</span> d <span class="hljs-keyword">or</span> <span class="hljs-number">1</span> <span class="hljs-keyword">to</span> <span class="hljs-number">7</span> but <span class="hljs-keyword">not</span> d1
+X|Z            matches X <span class="hljs-keyword">or</span> Z
+XZ            matches X followed <span class="hljs-keyword">by</span> Z
+(<span class="hljs-string">\d{2})</span>        matches two digits, ie <span class="hljs-number">01</span> <span class="hljs-keyword">or</span> <span class="hljs-number">93.</span>
+((ab){<span class="hljs-number">3</span>})    matches exactly <span class="hljs-string">'ababab'</span> (as group $<span class="hljs-number">2</span>)
+$n            used <span class="hljs-keyword">in</span> replacement <span class="hljs-keyword">for</span> a group reference
+(.)(.)=&gt;$<span class="hljs-number">2</span>$<span class="hljs-number">1</span>
+            will match data consisting <span class="hljs-keyword">of</span> two symbols <span class="hljs-keyword">and</span> replace
+            <span class="hljs-literal">it</span> <span class="hljs-keyword">by</span> exchanging the second <span class="hljs-keyword">and</span> first:
+            <span class="hljs-string">'ab'</span> will become <span class="hljs-string">'ba'</span>
+            <span class="hljs-string">'93'</span> will become <span class="hljs-string">'39'</span>
+
+(.{<span class="hljs-number">2</span>})(.{<span class="hljs-number">5</span>})-(.*)=&gt;$<span class="hljs-number">2</span>/$<span class="hljs-number">3</span>
+            will match data starting <span class="hljs-keyword">with</span> <span class="hljs-number">7</span> symbols before a <span class="hljs-string">'-'</span>
+            followed at least one symbol
+            <span class="hljs-keyword">this</span> will be replaced <span class="hljs-keyword">by</span> dropping the first group <span class="hljs-keyword">with</span> two symbols, the second found pattern group <span class="hljs-keyword">of</span> <span class="hljs-number">5</span> symbols, followed <span class="hljs-keyword">by</span> a slash <span class="hljs-keyword">and</span> the third group.
+a(?!b)        negative look ahead ?!, matches a <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> followed <span class="hljs-keyword">by</span> b
+(?i)        makes the regex ignoring <span class="hljs-keyword">case</span>
+(?s)        single line mode
+(?m)        multiline mode
+</code></pre><h1 id="options-flags">Options/Flags</h1>
+<p>Java Regex offers some options or flags. For example to make the . to match also Line Breaks, the flag (?.) can be used at the beginning of the Regex Search pattern. If you need to read barcode data with Line Breaks, use the DOTALL flag (?s). The demo plugin does not use any Pattern.Flags by default.</p>
+<h2 id="example">Example</h2>
+<p>Barcode data is
+	Dexter\nGordon (two words with a line break in between)
+	and you need to match that in all, then using (.<em>) will not match but (?s)(.</em>) will match.</p>
+<pre><code>rule    (.*)=&gt;$<span class="hljs-number">1</span><span class="hljs-string">\n;</span>        <span class="hljs-literal">no</span> output
+        (?s)(.*)<span class="hljs-string">\n;</span>        Dexter<span class="hljs-string">\nGordon\n</span>
+</code></pre><h2 id="supported-flags">Supported Flags</h2>
+<pre><code>Flag    Pattern             <span class="hljs-keyword">Comment</span>
+(?.)    DOTALL              matches printabale <span class="hljs-keyword">and</span> control chars (<span class="hljs-keyword">new</span> line, <span class="hljs-number">0x1e</span> <span class="hljs-keyword">and</span> others)
+(?i)    CASE_INSENSITIVE    <span class="hljs-keyword">ignore</span> <span class="hljs-keyword">case</span> <span class="hljs-keyword">for</span> non-<span class="hljs-keyword">unicode</span> <span class="hljs-keyword">encoding</span>
+(?m)    MULTILINE           normally ^ <span class="hljs-keyword">and</span> $ <span class="hljs-keyword">match</span> the <span class="hljs-keyword">Start</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">End</span> <span class="hljs-keyword">of</span> the <span class="hljs-keyword">input</span> (anchor),
+                            <span class="hljs-keyword">in</span> multiline <span class="hljs-keyword">mode</span> the ^ matches <span class="hljs-keyword">after</span> a line break <span class="hljs-keyword">or</span> <span class="hljs-keyword">at</span> the <span class="hljs-keyword">beginning</span>
+                            <span class="hljs-keyword">and</span> $ matches <span class="hljs-keyword">before</span> the line break <span class="hljs-keyword">or</span> the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> the input.
+(?u)    UNICODE_CASE        <span class="hljs-keyword">ignore</span> <span class="hljs-keyword">case</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">unicode</span> <span class="hljs-keyword">characters</span> <span class="hljs-keyword">if</span> CASE_INSENSITIVE <span class="hljs-keyword">is</span> used.
+                            CASE_INSENSITIVE will <span class="hljs-keyword">only</span> <span class="hljs-keyword">ignore</span> <span class="hljs-keyword">case</span> <span class="hljs-keyword">of</span> US-<span class="hljs-keyword">ASCII</span> <span class="hljs-keyword">characters</span>
+(?d)    UNIX_LINES          <span class="hljs-keyword">only</span> Unix <span class="hljs-keyword">style</span> line terminators <span class="hljs-string">'\n'</span> <span class="hljs-keyword">are</span> <span class="hljs-keyword">matched</span> <span class="hljs-keyword">for</span> ., ^ <span class="hljs-keyword">and</span> $.
+(?x)    COMMENTS            Permits white <span class="hljs-keyword">space</span> <span class="hljs-keyword">and</span> comments <span class="hljs-keyword">in</span> a pattern. White <span class="hljs-keyword">space</span> <span class="hljs-keyword">is</span> ignored
+                            <span class="hljs-keyword">and</span> embedded comments <span class="hljs-keyword">starting</span> <span class="hljs-keyword">with</span> a # <span class="hljs-keyword">are</span> ignored <span class="hljs-keyword">until</span> <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> line.
+</code></pre><h1 id="examples">Examples</h1>
+<p>The following is a list of examples with barcodes, rules and the resulting wedged data.</p>
+<p>In addition to data filtering, the Demo plugin will allow editing of the data once it is accepted.  This editing will allow:</p>
+<ul>
+	<li>Splitting the label into fields and extracting these fields for later processing</li>
+	<li>Rearrangement or deletion of these fields</li>
+	<li>Addition of text to the data</li>
+	<li>Stripping of extraneous data.</li>
+</ul>
+<h2 id="regex-rule-example-1">Regex Rule Example 1</h2>
+<p>Purpose: Pass a data string consisting of six digits and add an alphabetic character to the beginning of the string.</p>
+<pre><code><span class="hljs-attribute">Syntax</span>: ([0-9]{6})=&gt;M$1;
+
+<span class="sql">305481
+    will <span class="hljs-keyword">change</span> <span class="hljs-keyword">to</span> <span class="hljs-string">"M305481"</span>
+<span class="hljs-number">123</span> <span class="hljs-number">305481</span> <span class="hljs-number">123</span>
+    will <span class="hljs-keyword">not</span> <span class="hljs-keyword">match</span>, <span class="hljs-keyword">no</span> <span class="hljs-keyword">change</span> <span class="hljs-keyword">with</span> the rule above</span>
+</code></pre><p>Thus, a scanned data string such as 305481 would be passed and reformatted to read M305481. A scanned data string consisting of more than six numeric characters will not match.</p>
+<h3 id="variation-a">Variation A</h3>
+<pre><code><span class="hljs-attribute">Syntax</span>: g=&gt;([0-9]{6})=&gt;M$1;
+
+<span class="lsl"><span class="hljs-number">305481</span>
+    will change to <span class="hljs-string">"M305481"</span>
+<span class="hljs-number">123</span> <span class="hljs-number">305481</span> <span class="hljs-number">123</span>
+    will change to <span class="hljs-string">"123 M305481 123"</span></span>
+</code></pre><p>With the g option, any 6 digit will be replaced by M plus the 6 digits, the rest will not change around.</p>
+<pre><code>Syntax: <span class="hljs-function"><span class="hljs-params">(.*)</span>\s<span class="hljs-params">([<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">6</span>})</span>\s<span class="hljs-params">(.*)</span>=&gt;</span>M$<span class="hljs-number">2</span>;
+
+<span class="hljs-number">305481</span>
+    will change to <span class="hljs-string">"M305481"</span>
+<span class="hljs-number">123</span> <span class="hljs-number">305481</span> <span class="hljs-number">123</span>
+    will change to <span class="hljs-string">"M305481"</span>
+</code></pre><p>Will find the 6 digits surrounded by white space. A scanned data string in which the six numeric characters are not consecutive would not be passed.</p>
+<p><img src=".//sample-6digits.png" alt="TotalFreedomTest_02"></p>
+<p><img src=".//sample-3digits_blank_6digits_blank_3digits.png" alt="TotalFreedomTest_02"></p>
+<h2 id="regex-rule-example-2">Regex Rule Example 2</h2>
+<p>Purpose: Pass a data string consisting of nine digits, reformat the data to look like a Social Security number, and add an XML tag called <SSN>.</p>
+<pre><code>Syntax:<span class="hljs-function">(<span class="hljs-params">[<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">3</span>}</span>)(<span class="hljs-params">[<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">2</span>}</span>)(<span class="hljs-params">[<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">4</span>}</span>)=&gt;</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SSN</span>&gt;</span>$1-$2-$3<span class="hljs-tag">&lt;/<span class="hljs-name">SSN</span>&gt;</span></span>;
+</code></pre><p>The regex passes only scanned data strings consisting of a group of three numeric characters, followed by a group of two numeric characters, followed by a group of four numeric characters. Note that the groups are not separated by spaces.</p>
+<p>The replacment then reformats the data by adding hyphens between the numeric groups, and finally adds the XML tag &quot;<SSN>&quot; to the beginning of the string and adds &quot;</SSN>&quot; to the end of the string.</p>
+<p>Thus, a data string such as:</p>
+<pre><code><span class="hljs-number">123456789</span>
+</code></pre><p>is matched and reformatted to: </p>
+<pre><code>&lt;SSN&gt;<span class="hljs-number">123</span><span class="hljs-number">-45</span><span class="hljs-number">-6789</span>&lt;/SSN&gt;.
+</code></pre><p>A data string such as 1234567890 will not match as the regex will match  be truncated to include only the first nine digits, since it consists of more numeric characters than processed by the regex pattern string.</p>
+<p><img src=".//sample-9digits.png" alt="TotalFreedomTest_02"></p>
+<p><img src=".//sample-1234567890.png" alt="TotalFreedomTest_02"></p>
+<h2 id="regex-rule-example-3">Regex Rule Example 3</h2>
+<p>Purpose: Pass a data string consisting of 21 digits and delete a specified number of characters from the beginning and end of the string.</p>
+<pre><code>Syntax: ...(.{<span class="hljs-number">13</span>}).....=&gt;$<span class="hljs-number">1</span>;
+</code></pre><p>The regex passes scanned data strings that consist of 21 characters. The replacement expression removes the first three and the last five characters from the string as these are not part of the group marked with ( and ) in the regex string.</p>
+<p>Thus, a scanned data string such as: </p>
+<pre><code><span class="hljs-attribute">AAA1234567890123BBBBB</span>
+</code></pre><p>is passed and reformatted to: </p>
+<pre><code><span class="hljs-number">1234567890123</span>
+</code></pre><p><img src=".//sample-AAA1234567890123BBBBB.png" alt="TotalFreedomTest_02"></p>
+<h2 id="regex-rule-example-4">Regex Rule Example 4</h2>
+<p>Purpose: Pass a data string consisting of two groups of alphabetic characters and reformat the string into <em>lastname</em>, <em>firstname</em>.</p>
+<pre><code><span class="hljs-comment">([a-zA-Z]+)</span> <span class="hljs-comment">(\\w+)</span>=&gt;$<span class="hljs-number">2</span>, $<span class="hljs-number">1</span>;
+</code></pre><p>The regex matches scanned data strings that consist of two groups of alphabetic characters separated by a space. The replacement expression reformats the passed data string so that the second group of characters precedes the first group. The replacement expression also inserts a comma and a space between the two groups of characters.</p>
+<p>The regex uses one set [a-zA-Z] and the word specifier \w to show alternative ways to look for printable characters making a word. In both cases the + sign after the set and specifier means: match at least one and as much as possible.</p>
+<p>Thus, a scanned data string such as: </p>
+<pre><code><span class="hljs-attribute">Dexter Gordon</span>
+</code></pre><p>is passed, and the data is modified to read: </p>
+<pre><code>Gordon, Dexter
+</code></pre><p><img src=".//sample-Dexter_Gordon.png" alt="TotalFreedomTest_02"></p>
+<h1 id="regex-rule-example-5">Regex Rule Example 5</h1>
+<pre><code><span class="hljs-meta">g=&gt;</span><span class="clojure">([<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">6</span>})=&gt;M$<span class="hljs-number">1</span><span class="hljs-comment">;</span></span>
+</code></pre><p>The above will replace a sequence of exactly 6 digits by M and the digits.</p>
+<pre><code><span class="hljs-number">10110</span>
+    will <span class="hljs-keyword">return</span> <span class="hljs-keyword">no</span> result <span class="hljs-keyword">as</span> the rule does not <span class="hljs-keyword">match</span>
+<span class="hljs-number">305481</span>
+    will <span class="hljs-keyword">change</span> <span class="hljs-keyword">to</span> <span class="hljs-string">"M305481"</span>
+<span class="hljs-number">123</span> <span class="hljs-number">305481</span> <span class="hljs-number">123</span>
+    will <span class="hljs-keyword">change</span> <span class="hljs-keyword">to</span> <span class="hljs-string">"123 M305481 123"</span>
+</code></pre><h1 id="addendum">Addendum</h1>
+<p>If there is no rule file &quot;dataedit_regex.ini&quot; the plugin will write a default rule file like this:</p>
+<pre><code><span class="hljs-comment"># this is a comment;</span>
+<span class="hljs-comment"># example 1;</span>
+([<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]{<span class="hljs-number">6</span>})=&gt;M<span class="hljs-variable">$1</span> ex1;
+<span class="hljs-comment"># g=&gt;([0-9]{6})=&gt;M$1 ex1a;</span>
+(.*)\\s([<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]{<span class="hljs-number">6</span>})\\s(.*)=&gt;M<span class="hljs-variable">$2</span> ex1b;
+<span class="hljs-comment"># example 2;</span>
+([<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]{<span class="hljs-number">3</span>})([<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]{<span class="hljs-number">2</span>})([<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]{<span class="hljs-number">4</span>})=&gt;<span class="hljs-variable">&lt;SSN&gt;</span><span class="hljs-variable">$1</span>-<span class="hljs-variable">$2</span>-<span class="hljs-variable">$3</span>&lt;/SSN&gt; ex2;
+<span class="hljs-comment"># example 3;</span>
+...(.{<span class="hljs-number">13</span>}).....=&gt;<span class="hljs-variable">$1</span> ex3;
+<span class="hljs-comment"># example 4;</span>
+([a-zA-Z]+) (\\w+)=&gt;<span class="hljs-variable">$2</span>, <span class="hljs-variable">$1</span> ex4;
+(.*)=&gt;no <span class="hljs-built_in">match</span>: <span class="hljs-variable">$1</span>\n;
+</code></pre><p>The rule lines are the ones mentioned as examples.</p>
+<p>For example 1 you should only uncomment one of the example rules:</p>
+<pre><code>([<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">6</span>})=&gt;M$<span class="hljs-number">1</span> ex1;
+g=&gt;([<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">6</span>})=&gt;M$<span class="hljs-number">1</span> ex1a;
+(.*)\\s([<span class="hljs-number">0</span><span class="hljs-number">-9</span>]{<span class="hljs-number">6</span>})\\s(.*)=&gt;M$<span class="hljs-number">2</span> ex1b;
+</code></pre><p>or you will get (possibly) unexpected results. With all ex1 rules enabled you will get:</p>
+<pre><code><span class="hljs-string">"123 305481 123"</span> gives <span class="hljs-string">"123 M305481 ex1a 123"</span>
+    (<span class="hljs-name">rule</span> <span class="hljs-string">"g=&gt;([0-9]{6})=&gt;M$1 ex1a"</span> matched)
+<span class="hljs-string">"305481"</span> gives <span class="hljs-string">"M305481 ex1"</span>
+    (<span class="hljs-name">rule</span> <span class="hljs-string">"([0-9]{6})=&gt;M$1 ex1"</span> matched)
+</code></pre><h2 id="note">Note</h2>
+<p>The ; is not part of the rule. ;\r\n is used to split the rules file into rules.</p>
+<h2 id="note-2">Note 2</h2>
+<p>Posix-Regex (US ASCII only) is not supported. For example &quot;\p{Cntrl}&quot; and other regex starting with \p.</p>
+<h2 id="multiline-barcode-data-matching">Multiline barcode data matching</h2>
+<p>See the DOTALL flag (?.).</p>
+<h1 id="testing">Testing</h1>
+<p>There are various web sites that enable online testing of java regex. This should be used to verify a regex will work for given input data and outs pus the desired changed data.
+	Please note that these links are provided just as a sample and my or may not work for you. There is no warranty.</p>
+<ul>
+	<li>myregexp.com</li>
+</ul>
+<p><img src=".//myregexcom.png" alt="myregexp"></p>
+<ul>
+	<li>regexplanet.com/advanced/java/</li>
+</ul>
+<p><img src=".//regexplanetcom.png" alt="regexplanet"></p>
+<ul>
+	<li>regexe.com</li>
+</ul>
+<p><img src=".//regexcom.png" alt="regexe"></p>
+<ul>
+	<li>regex101.com</li>
+</ul>
+<p><img src=".//regex101com.png" alt="regex101"></p>
+</body></html>

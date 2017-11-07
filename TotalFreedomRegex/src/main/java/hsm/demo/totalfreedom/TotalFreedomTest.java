@@ -15,11 +15,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -73,8 +78,9 @@ public class TotalFreedomTest extends AppCompatActivity {
         btnShowList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),RuleListActivity.class);
-                startActivity(i);
+                //Intent i = new Intent(getApplicationContext(),RuleListActivity.class);
+                //startActivity(i);
+                showRulesList();
             }
         });
 
@@ -121,10 +127,10 @@ public class TotalFreedomTest extends AppCompatActivity {
         // Assume thisActivity is the current activity
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         if(permissionCheck!=PackageManager.PERMISSION_DENIED)
-            ;
+            Toast.makeText(this,"Need 'Read External Storage' permission!",Toast.LENGTH_LONG);
         int permissionCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if(permissionCheck2!=PackageManager.PERMISSION_DENIED)
-            ;
+            Toast.makeText(this,"Need 'Write External Storage' permission!",Toast.LENGTH_LONG);
     }
 
     @Override
@@ -138,6 +144,45 @@ public class TotalFreedomTest extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(logReceiver);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    void showRulesList(){
+        Intent i = new Intent(getApplicationContext(),RuleListActivity.class);
+        startActivity(i);
+    }
+
+    void showHelp(){
+        HelpDialog helpDialog = new HelpDialog(this, "file:///android_asset/usage.html");
+        helpDialog.setTitle("Usage");
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+        helpDialog.show();
+        helpDialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menuitem_rules_list:
+                showRulesList();
+                return true;
+            case R.id.menuitem_main_help:
+                showHelp();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private BroadcastReceiver logReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

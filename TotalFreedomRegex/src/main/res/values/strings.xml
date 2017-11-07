@@ -6,4 +6,8 @@
     <string name="txtYesNoDialogText">Delete this rule?</string>
     <string name="txtMessageNoDelete">Rule not deleted</string>
     <string name="txtMessageYesDeleted">Rule deleted</string>
+    <string name="menu_rules_list">Rules List ...</string>
+    <string name="menuitem_add_rule">Add Rule ...</string>
+    <string name="edit_cancel">Cancel Edit</string>
+    <string name="edit_save">Save</string>
 </resources>
