@@ -14,11 +14,11 @@ Tap on [SAVE LIST] to save the current list or changes are lost.
 
 To edit, delete or move a rule, tap on a rule in the list and use the desired item in the popup menu.
 
-![popup menu](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//edit3_list_popup.png)
+![popup menu](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc/edit3_list_popup.png)
 
 Rule changes for existing or new rules are done in the Edit Rule screen.
 
-![edit rule](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc//edit4_edit_rule.png)
+![edit rule](https://github.com/hjgode/TotalFreedomDataEdit/raw/master/TotalFreedomRegex/doc/edit4_edit_rule.png)
 
 There are two options to make the rule global or a no-stop-rule.
 
